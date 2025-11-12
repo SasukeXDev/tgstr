@@ -86,62 +86,49 @@
         </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg bg-primary mb-3 p-1" data-bs-theme="dark">
-        <div class="container-fluid">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary p-2">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+
+    <!-- Brand -->
     <a class="navbar-brand d-flex align-items-center" href="/">
       <img src="https://homies-theta.vercel.app/logo.png" alt="Logo" height="40" class="me-2">
-      <span>Homies</span>
+      <span>AniHix</span>
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
-      aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
+    <!-- Navbar Links -->
     <div class="collapse navbar-collapse" id="navbarMenu">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" href="/">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/features">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/pricing">Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/about">About</a>
-        </li>
+        <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/list">List</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://t.me/AniHix_chat">Community</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
       </ul>
+    </div>
 
-      <form class="d-flex" role="search">
+    <!-- Right Side (Search + Admin Buttons) -->
+    <div class="d-flex align-items-center">
+      <form class="d-flex me-2" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-light" type="submit">Search</button>
       </form>
+
+      <!-- Admin Buttons -->
+      <form action="/reload" method="get" class="me-2 admin-only">
+        <button type="submit" class="btn btn-light" name="chatId" value="<!-- Chat_id -->" title="Reload">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+      </form>
+
+      <form id="signoutForm" action="/logout" method="post">
+        <button type="submit" class="btn btn-danger btn-sm">
+          <i class="bi bi-box-arrow-left"></i> Logout
+        </button>
+      </form>
     </div>
+
   </div>
 </nav>
 
-
-
-
-
-
-
-
-            
-            <div class="d-flex">
-                <form action="/reload" method="get" role="reload" class="admin-only ">
-                    <button type="submit" class="btn btn-primary me-2" name="chatId" value="<!-- Chat_id -->">
-                        <i class="bi bi-arrow-clockwise" ></i>
-                    </button>
-                </form>
-                <form id="signoutForm" action="/logout" method="post" class="d-flex" role="logout">
-                    <button type="submit" class="btn btn-secondary btn-sm"><i class="bi bi-box-arrow-left"></i>
-                        Logout</button>
-                </form>
-            </div>
-        </div>
     </nav>
     <div class="container d-flex align-items-center justify-content-center">
         <div class="card mx-auto text-center">
@@ -185,7 +172,7 @@
                     <path fill-rule="evenodd"
                         d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
                 </svg> by <a href="https://t.me/The_Last_Coder" target="_blank">Sasuke Uchiha</a><br>
-                &copy; 2024 <a href="https://tgstr-t6dq.onrender.com/" target="_blank">AniHix</a>. All Rights
+                &copy; 2025 <a href="https://tgstr-t6dq.onrender.com/" target="_blank">AniHix</a>. All Rights
                 Reserved.
         </div>
     </footer>
