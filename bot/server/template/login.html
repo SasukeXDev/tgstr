@@ -119,11 +119,12 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-center">
         <div class="modal-header border-0">
-          <h5 class="modal-title w-100" id="infoModalLabel">Important Notice</h5>
+          <h5 class="modal-title w-100" id="infoModalLabel"><b>Important Notice</b></h5>
         </div>
         <div class="modal-body">
-          <p>Please click the button below and wait 10–29 seconds. The login page will appear automatically.</p>
-          <button id="startBtn" class="btn btn-primary">Start</button>
+          <p>Please click the button below and wait 10–29 seconds. The login page will appear automatically.</p>        
+             <a href="https://google.com" target="_blank" class="btn btn-primary" id="startBtn">Open Now!</a>
+
           <div id="countdown" class="mt-3 text-muted"></div>
         </div>
       </div>
@@ -155,99 +156,42 @@
 
      
   <script>
-    (function() {
-      // Helper for debug (remove console.log in production)
-      const log = (...s) => { try { console.log('[login-popup]', ...s); } catch(e){} };
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginContainer = document.getElementById("loginContainer");
+      const modalEl = document.getElementById("infoModal");
+      const countdownEl = document.getElementById("countdown");
+      const startBtn = document.getElementById("startBtn");
+      const modal = new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: false });
 
-      // Error popup handling (keeps existing behavior)
-      window.addEventListener('load', function () {
-        try {
-          var errorPopup = document.getElementById("errorPopup");
-          var strong = errorPopup.querySelector("strong");
-          var errorMessage = strong ? strong.innerText.trim() : "";
-          if (errorMessage !== "Oh snap! Invalid username or password") {
-            errorPopup.style.display = "none";
-          } else {
-            setTimeout(() => errorPopup.style.display = "none", 5000);
-          }
-        } catch (e) {
-          log('errorPopup handling failed', e);
-        }
-      });
+      const lastShown = parseInt(localStorage.getItem("popupLastShown") || "0", 10);
+      const now = Date.now();
+      const DAY = 24 * 60 * 60 * 1000;
 
-      // Popup + 24h logic
-      function showLoginAfterDelay() {
-        document.getElementById("loginContainer").style.display = "block";
-      }
+      // Show popup only if 24 hours passed
+      if (!lastShown || (now - lastShown) > DAY) {
+        modal.show();
 
-      function initPopupFlow() {
-        try {
-          const lastShownRaw = localStorage.getItem('popupLastShown');
-          const lastShown = lastShownRaw ? parseInt(lastShownRaw, 10) : 0;
-          const now = Date.now();
-          const DAY = 24 * 60 * 60 * 1000;
+        startBtn.onclick = () => {
+          const delay = Math.floor(Math.random() * 20) + 10; // 10–29 sec
+          let remaining = delay;
+          countdownEl.innerText = `Please wait ${remaining} seconds...`;
 
-          // If shown within last 24 hours, skip popup and show login immediately
-          if (lastShown && (now - lastShown) < DAY) {
-            log('Popup shown within 24h — skipping. seconds left:', Math.round((DAY - (now - lastShown))/1000));
-            showLoginAfterDelay();
-            return;
-          }
-
-          // Ensure bootstrap exists
-          if (typeof bootstrap === 'undefined' || !bootstrap.Modal) {
-            log('Bootstrap Modal not available — showing login directly');
-            showLoginAfterDelay();
-            return;
-          }
-
-          const modalEl = document.getElementById('infoModal');
-          const modal = new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: false });
-
-          // Show the modal
-          modal.show();
-          log('Modal shown');
-
-          const startBtn = document.getElementById('startBtn');
-          const countdownEl = document.getElementById('countdown');
-
-          // Guard to avoid multiple clicks
-          let started = false;
-          startBtn.addEventListener('click', function () {
-            if (started) return;
-            started = true;
-            // random delay 10-29 seconds
-            const delaySec = Math.floor(Math.random() * (29 - 10 + 1)) + 10;
-            let t = delaySec;
-            countdownEl.innerText = `Please wait ${t} second(s)...`;
-
-            const iv = setInterval(() => {
-              t--;
-              if (t > 0) {
-                countdownEl.innerText = `Please wait ${t} second(s)...`;
-              } else {
-                clearInterval(iv);
-                modal.hide();
-                document.getElementById('loginContainer').style.display = 'block';
-                try { localStorage.setItem('popupLastShown', String(Date.now())); } catch(e){ log('localStorage set failed', e); }
-              }
-            }, 1000);
-          });
-
-        } catch (err) {
-          log('initPopupFlow failed', err);
-          // fallback: show login
-          showLoginAfterDelay();
-        }
-      }
-
-      // Run after DOM ready (use DOMContentLoaded to ensure elements exist)
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initPopupFlow);
+          const timer = setInterval(() => {
+            remaining--;
+            countdownEl.innerText = `Please wait ${remaining} seconds...`;
+            if (remaining <= 0) {
+              clearInterval(timer);
+              modal.hide();
+              loginContainer.style.display = "block";
+              localStorage.setItem("popupLastShown", Date.now().toString());
+            }
+          }, 1000);
+        };
       } else {
-        initPopupFlow();
+        // Already shown within 24h
+        loginContainer.style.display = "block";
       }
-    })();
+    });
   </script>
 
 </html>
