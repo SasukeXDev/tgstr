@@ -150,41 +150,67 @@
 
     const video = document.getElementById('player');
 
-    // Detect file type by extension
-    const isHLS = downloadlink.endsWith('.m3u8');
-    const isMP4 = downloadlink.endsWith('.mp4');
+    // --- AUTO-DETECT TYPE ---
+    const isHLS = videoSrc.includes(".m3u8");
+    const isMP4 = videoSrc.includes(".mp4");
 
+    // --- OPTIONAL: bypass CORS with your proxy endpoint ---
+    // Example: https://yourdomain.com/proxy?url=<video link>
+    // Use this if direct link gives 403 or CORS error.
+    async function testVideo(url) {
+        try {
+            const res = await fetch(url, { method: "HEAD" });
+            return res.ok;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    if (!(await testVideo(videoSrc))) {
+        console.warn("Direct link blocked, trying proxy fallback...");
+        videoSrc = `/proxy?url=${encodeURIComponent(videoSrc)}`;
+    }
+
+    // --- HLS Support ---
     if (isHLS && Hls.isSupported()) {
-        // ✅ Use HLS.js for HLS streams
         const hls = new Hls({
             maxBufferLength: 60,
             xhrSetup: function(xhr, url) {
                 xhr.withCredentials = false;
             }
         });
-        hls.loadSource(downloadlink);
+        hls.loadSource(videoSrc);
         hls.attachMedia(video);
-        hls.on(Hls.Events.ERROR, function (event, data) {
-            console.error("HLS error:", data);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
+        hls.on(Hls.Events.ERROR, (e, data) => {
+            console.error("HLS.js error:", data);
         });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // ✅ Native HLS support (iOS/Safari)
-        video.src = downloadlink;
-    } else if (isMP4) {
-        // ✅ MP4 file direct playback
-        video.src = downloadlink;
+    } 
+    // --- Native Safari HLS ---
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = videoSrc;
+        video.addEventListener('loadedmetadata', () => {
+            video.play().catch(()=>{});
+        });
+    } 
+    // --- Direct MP4 ---
+    else if (isMP4) {
+        video.src = videoSrc;
         video.type = "video/mp4";
-    } else {
-        console.warn("Unknown video type. Attempting direct load...");
-        video.src = downloadlink;
+        video.addEventListener('loadedmetadata', () => {
+            video.play().catch(()=>{});
+        });
+    } 
+    else {
+        video.src = videoSrc;
+        console.warn("Unknown format — attempting direct playback");
     }
 
-    // Initialize Plyr
+    // --- Initialize Plyr ---
     const player = new Plyr(video, {
         controls: [
-            'play-large', 'play', 'progress', 'current-time',
-            'mute', 'volume', 'settings', 'pip', 'airplay',
-            'fullscreen'
+            'play-large', 'play', 'progress', 'current-time', 
+            'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'
         ],
         settings: ['quality', 'speed', 'loop'],
         ratio: '16:9',
@@ -192,10 +218,10 @@
         keyboard: { focused: true, global: true },
     });
 
-    // Handle load errors gracefully
-    video.addEventListener('error', (e) => {
-        console.error("Video error:", e);
-        alert("This video could not be played. Try opening in external player.");
+    // --- Error Handling ---
+    video.addEventListener('error', (err) => {
+        console.error("Video playback error:", err);
+        alert("This video cannot be played directly. Try opening it in MX Player or VLC.");
     });
 });
 
