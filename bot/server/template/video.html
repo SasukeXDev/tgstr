@@ -9,11 +9,16 @@
         type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <title>AniHix: <!-- Filename --> </title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/css/plyr.css">
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/css/plyr.css">    OLD CODE
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script> --> 
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>  
     <link rel="stylesheet" href="https://bootswatch.com/5/<!-- Theme -->/bootstrap.min.css">
 <!--    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>   -->
+  <!-- Video.js + IMA -->
+  <link href="https://vjs.zencdn.net/7.20.3/video-js.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/videojs-ima@1.9.1/dist/videojs.ima.min.css" rel="stylesheet" />
+
+    
     <style>
         body {
             height: 100vh;
@@ -49,7 +54,7 @@
             margin: auto;
             padding-bottom: 10px;
         }
-
+        
         .plyr {
             border-radius: 5px;
         }
@@ -65,6 +70,27 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+
+
+
+    .video-container {
+      max-width: 960px;
+      margin: 20px auto;
+      position: relative;
+      aspect-ratio: 16/9;
+    }
+    .video-js {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+
+
+
+
+
+        
 
         @media (max-width: 992px) {
 
@@ -104,11 +130,26 @@
 
         </div>
     </nav>
-    <div class="video-player">
-        <video controls crossorigin="anonymous" playsinline data-poster="<!-- Poster -->" id="player">
+
+    
+      <!--    <div class="video-player">
+        <video controls crossorigin="anonymous" playsinline data-poster="<!-- Poster " id="player">
             <source src="#" type="video/mp4" />
         </video>
-    </div>
+    </div>  -->
+
+      <!-- Video Container -->
+  <div class="video-container">
+    <video id="player"
+           class="video-js vjs-default-skin vjs-big-play-centered"
+           controls preload="auto"
+           data-poster=" "
+           data-setup='{"fluid": true}'>
+      <source src="#" type="video/mp4">
+    </video>
+  </div>
+
+    
     <div class="card bg-light mb-3" style="margin: auto; border-radius: 5px;">
         <div class="card-body">
             <h6 class="card-title">Name: <!-- Filename --></h6>
@@ -136,6 +177,14 @@
         </div>
     </footer>
 </body>
+
+  <!-- Scripts -->
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+  <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-ads@6.9.0/dist/videojs-contrib-ads.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-ima@1.9.1/dist/videojs.ima.min.js"></script>
+
+    
 <script>
     const videolink = window.location.href;
     const url = new URL(videolink);
@@ -148,11 +197,45 @@
 
     const downloadlink = `${domainUrl}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
 
-    const player = new Plyr('#player', {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen', 'pip', 'airplay', 'settings', "play-large", 'duration'],
-        hideControls: false,
-        keyboard: { focused: true, global: true },
-        loop: { active: false },
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const player = videojs('#player');
+
+      // IMA plugin setup
+      player.ima({
+        id: 'player',
+        adTagUrl: 'https://active-bat.com/dkm/F/z.dkGKNhvLZmGEUd/OeSm-9kuQZrUwlSkJPSTqYR1RMvj/Qm4sNijTcltiNPj/U/y/N/DRgd2VONC_ZGsmamW/1wpzd/DA0cxP',
+        debug: false,
+        timeout: 5000,
+        prerollTimeout: 5000
+      });
+
+      player.ready(function () {
+        player.ima.initializeAdDisplayContainer();
+
+        // Catch ad errors and fallback
+        player.on('aderror', () => { player.play(); });
+
+        // Pre-roll ads
+        player.ima.requestAds();
+        player.play();
+
+        // Mid-roll (pause trigger)
+        player.on('pause', function () {
+          if (!player.ima.adIsPlaying()) {
+            player.ima.changeAdTag('YOUR_MID_ROLL_VAST_URL');
+            player.ima.requestAds();
+            player.play();
+          }
+        });
+
+        // Post-roll on ended
+        player.on('ended', function () {
+          player.ima.changeAdTag('YOUR_POST_ROLL_VAST_URL');
+          player.ima.requestAds();
+        });
+      });
     });
 
     
