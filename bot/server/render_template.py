@@ -47,9 +47,22 @@ async def render_page(id, secure_hash, is_admin=False, html='', playlist='', dat
             html = (await f.read()).replace("<!-- Theme -->", theme.lower()).replace("<!-- Playlist -->", playlist).replace("<!-- Database -->", database).replace("<!-- Title -->", msg).replace("<!-- Parent_id -->", id)
             if not is_admin:
                 html += admin_block
+
+  elif route == 'list':
+    async with aiopen(ospath.join(tpath, 'list.html'), 'r') as f:
+        html = (await f.read()).replace("<!-- Print -->", html).replace("<!-- Theme -->", theme.lower()).replace("<!-- Database -->", database) 
+                               
+    if not is_admin:
+        html += admin_block
+        if Telegram.HIDE_CHANNEL:
+            html += hide_channel
+          
     elif route == 'index':
         async with aiopen(ospath.join(tpath, 'index.html'), 'r') as f:
-            html = (await f.read()).replace("<!-- Print -->", html).replace("<!-- Theme -->", theme.lower()).replace("<!-- Title -->", msg).replace("<!-- Chat_id -->", chat_id)
+            html = (await f.read()).replace("<!-- Print -->", html)
+                                   .replace("<!-- Theme -->", theme.lower())
+                                   .replace("<!-- Title -->", msg)
+                                   .replace("<!-- Chat_id -->", chat_id)
             if not is_admin:
                 html += admin_block
     else:
