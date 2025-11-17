@@ -110,7 +110,7 @@
 
     <div class="card bg-light mb-3" style="margin: auto; border-radius: 5px;">
         <div class="card-body">
-            <h6 class="card-title">Name: <!-- Filename --></h6>
+            <h6 id="videoname" class="card-title">Name: <!-- Filename --></h6>
             <p class="card-text">Size: <!-- Size --></p>
         </div>
     </div>
@@ -146,6 +146,11 @@
     const hashParam = new URLSearchParams(window.location.search).get('hash');
 
     const encodedName = encodeURIComponent('<!-- Filename -->');
+
+
+        // Get filename from HTML instead of using <!-- Filename -->
+    const filename = document.getElementById("videoname").textContent.replace("Name:", "").trim();
+    const encodedName = encodeURIComponent(filename);
 
     const downloadlink = `${domainUrl}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
     const rawDomain = domainUrl.replace(/^https?:\/\//, "");
