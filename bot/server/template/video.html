@@ -152,12 +152,8 @@
 
 
     const player = new Plyr('#player', {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen', 'pip', 'airplay', 'settings', "play-large", 'duration'],
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'subtitles', 'audio', 'fullscreen', 'pip', 'airplay', 'settings', "play-large", 'duration'],
         hideControls: true,
-        // Auto-detect multiple audio tracks (Hindi, English, Japanese, etc.)
-        audio: "auto",
-        // Auto-detect embedded subtitles (VTT, SRT inside MKV/MP4/HLS)
-        subtitles: "auto",
         keyboard: { focused: true, global: true },
         loop: { active: false },
     });
