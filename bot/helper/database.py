@@ -107,7 +107,7 @@ class Database:
         if fetch_old := self.files.find_one({"chat_id": chat_id, "hash": hash}):
             return
         file = {"chat_id": chat_id, "msg_id": file_id,
-                "hash": hash, "title": name, "size": size, "type": file_type}
+                "hash": hash, "title": caption, "size": size, "type": file_type}
         self.files.insert_one(file)
 
 
