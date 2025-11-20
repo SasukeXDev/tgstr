@@ -97,4 +97,4 @@ async def posts_db_file(posts):
 
     </div>
 """
-    return ''.join(phtml.format(cid=post["_id"], chat_id=str(post["chat_id"]).replace("-100", ""), id=post["file_id"], img=post["thumbnail"], title=(post.get("caption") or post["name"]), hash=post["hash"], size=post['size'], type=post['file_type'], ctype=post["parent_folder"]) for post in posts)
+    return ''.join(phtml.format(cid=post["_id"], chat_id=str(post["chat_id"]).replace("-100", ""), id=post["file_id"], img=post["thumbnail"], title=post["caption"] if "caption" in post and post["caption"] else post["name"], hash=post["hash"], size=post['size'], type=post['file_type'], ctype=post["parent_folder"]) for post in posts)
