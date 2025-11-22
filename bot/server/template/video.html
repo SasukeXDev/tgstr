@@ -114,9 +114,9 @@
             <p class="card-text">Size: <!-- Size --></p>
         </div>
     </div>
-    <div class="alert alert-warning d-flex flex-column gap-2" role="alert" style="border-radius: 10px;">
-        <h5 class="alert-heading">⚠️ Unsupported Video Format</h5>
-        <p>This video cannot be played in your browser. Please open it in an external media player:</p></div>
+    <div class="alert alert-warning d-flex flex-column gap-1" role="alert" style="border-radius: 8px;">
+        <h6 class="alert-heading">⚠️ Unsupported Video Format</h6>
+        <p>If video shows black screen or cannot be played in your browser. Please open it in an external media player:</p></div>
     <div class="container d-flex justify-content-center align-items-center" style="width: 100%; padding: 0 5px;">
         <div onclick="mx_player()" class="btn btn-primary">MX Player</div>
         <div onclick="vlc_player()" class="btn btn-primary">VLC Mobile</div>
@@ -152,7 +152,7 @@
 
 
     const player = new Plyr('#player', {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'subtitles', 'audio', 'fullscreen', 'pip', 'airplay', 'settings', "play-large", 'duration'],
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen', 'pip', 'airplay', 'settings', "play-large", 'duration'],
         hideControls: true,
         keyboard: { focused: true, global: true },
         loop: { active: false },
