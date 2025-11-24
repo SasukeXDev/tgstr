@@ -108,7 +108,7 @@ async def render_page(
             LOGGER.info("Invalid hash for message with - ID %s", id)
             raise InvalidHash
         filename, tag, size = (
-            file_data.file_caption,
+            file_data.file_name,
             file_data.mime_type.split("/")[0].strip(),
             get_readable_file_size(file_data.file_size),
         )
@@ -120,7 +120,7 @@ async def render_page(
                 poster = f"/api/thumb/{chat_id}?id={id}"
                 html = (
                     (await r.read())
-                    .replace("<!-- Filename -->", filename)
+                    .replace("<!-- Filename -->", msg)
                     .replace("<!-- Theme -->", theme.lower())
                     .replace("<!-- Poster -->", poster)
                     .replace("<!-- Size -->", size)
