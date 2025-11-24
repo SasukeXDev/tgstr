@@ -108,7 +108,7 @@ async def render_page(
             LOGGER.info("Invalid hash for message with - ID %s", id)
             raise InvalidHash
         filename, tag, size = (
-            caption if caption else file_data.file_name,
+            file_data.file_caption,
             file_data.mime_type.split("/")[0].strip(),
             get_readable_file_size(file_data.file_size),
         )
