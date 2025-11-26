@@ -6,7 +6,7 @@ from bot import LOGGER
 from bot.config import Telegram
 from bot.helper.database import Database
 from bot.helper.exceptions import InvalidHash
-from bot.helper.index import title
+from bot.helper.index import get_messages
 from bot.helper.file_size import get_readable_file_size
 from bot.server.file_properties import get_file_ids
 from bot.telegram import StreamBot
@@ -117,9 +117,13 @@ async def render_page(
             filename = "Proper Filename is Missing"
         filename = re.sub(r"[,|_\',]", " ", filename)
         if tag == "video":
+          
+          message = await StreamBot.get_messages(chat_id, int(id))
+          raw_caption = message.caption or message.video.file_name or ""
+          caption = extract_title(raw_caption)
+          
             async with aiopen(ospath.join(tpath, "video.html")) as r:
                 poster = f"/api/thumb/{chat_id}?id={id}"
-                caption=post["title"]
                 html = (
                     (await r.read())
                     .replace("<!-- Title -->", caption)
