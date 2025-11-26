@@ -115,8 +115,7 @@ async def render_page(
         if tag == "video":
 
             message = await StreamBot.get_messages(chat_id, int(id))
-            raw_caption = message.caption or message.video.file_name or ""
-            caption = extract_title(raw_caption)
+            caption = message.caption or message.video.file_name or ""
 
             async with aiopen(ospath.join(tpath, "video.html")) as r:
                 poster = f"/api/thumb/{chat_id}?id={id}"
