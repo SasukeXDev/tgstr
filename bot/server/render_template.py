@@ -117,21 +117,19 @@ async def render_page(
             message = await StreamBot.get_messages(chat_id, int(id))
             caption = message.caption or message.video.file_name or ""
 
-
-          # Duration (in seconds → formatted hh:mm:ss)
-          duration_sec = getattr(message.video, "duration", None)
-          if duration_sec:
-            duration_sec = int(duration_sec)  # convert float to int
-            hours = duration_sec // 3600
-            minutes = (duration_sec % 3600) // 60
-            seconds = duration_sec % 60
-            if hours > 0:
-                duration = f"{hours:02}:{minutes:02}:{seconds:02}"
+            # Duration (in seconds → formatted hh:mm:ss)
+            duration_sec = getattr(message.video, "duration", None)
+            if duration_sec:
+                duration_sec = int(duration_sec)  # convert float to int
+                hours = duration_sec // 3600
+                minutes = (duration_sec % 3600) // 60
+                seconds = duration_sec % 60
+                if hours > 0:
+                    duration = f"{hours:02}:{minutes:02}:{seconds:02}"
+                else:
+                    duration = f"{minutes:02}:{seconds:02}"
             else:
-                duration = f"{minutes:02}:{seconds:02}"
-          else:
-              duration = "Unknown"
-            
+                duration = "Unknown"
 
             async with aiopen(ospath.join(tpath, "video.html")) as r:
                 poster = f"/api/thumb/{chat_id}?id={id}"
