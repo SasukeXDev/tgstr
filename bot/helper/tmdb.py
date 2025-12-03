@@ -16,7 +16,7 @@ def clean_title(title: str) -> str:
     # Remove extra info like resolution, audio, brackets, etc.
     title = re.sub(r'\[.*?\]', '', title)
     title = re.sub(r'\(.*?\)', '', title)
-    title = re.sub(r'\d{3,4}p|HEVC|HDRip|WEB-DL|x264|x265', '', title, flags=re.I)
+    title = re.sub(r'\d{3,4}p|HEVC|HDRip|WEB-DL|x264|x265|(720p|1080p|480p|WEB-DL|HDRip|HEVC|x264|x265|Dual Audio|Hindi|English|ORG)', '', title, flags=re.I)
     title = re.sub(r'[^a-zA-Z0-9\s]', ' ', title)
     return title.strip()
 
