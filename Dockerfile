@@ -23,6 +23,10 @@ RUN pip install -U pip uv
 # Install Python dependencies.
 RUN uv pip install --system --no-cache-dir -r requirements.txt
 
+
+RUN pip install tmdbv3api
+
+
 # Copy the rest of the application source code
 COPY . /app
 
