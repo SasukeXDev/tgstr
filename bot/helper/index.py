@@ -52,8 +52,8 @@ async def get_files(chat_id, page=1):
         title = post.caption
         title, _ = splitext(title)
         title = re.sub(r'[.,|_\',]', ' ', title)
-        poster_url = fetch_poster(title)
-        posts.append({"msg_id": post.id, "title": title,
+        poster = fetch_poster(title)
+        posts.append({"msg_id": post.id, "title": title, "poster_url": poster,
                     "hash": file.file_unique_id[:6], "size": get_readable_file_size(file.file_size), "type": file.mime_type})
     save_cache(chat_id, {"posts": posts}, page)
     return posts
