@@ -73,7 +73,7 @@ async def posts_file(posts, chat_id):
         <a href="/watch/{chat_id}?id={id}&hash={hash}">
         <div class="card-body p-1">
             <h6 class="card-title">{title}</h6>
-            <div>
+            <div class="badges-bottom">
                 <span class="badge bg-warning">{type}</span>
                 <span class="badge bg-info">{size}</span>
             </div>
@@ -82,6 +82,7 @@ async def posts_file(posts, chat_id):
     </div>
 </div>
 """
+
 
 
     return ''.join(phtml.format(chat_id=str(chat_id).replace("-100", ""), id=post["msg_id"], img=f"/api/thumb/{chat_id}?id={post['msg_id']}", title=post["title"], hash=post["hash"], size=post['size'], type=post['type']) for post in posts)
