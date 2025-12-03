@@ -1,6 +1,6 @@
 from tmdbv3api import TMDb, Movie, TV
 import urllib.parse
-from bot.helper.index import title
+
 
 tmdb = TMDb()
 tmdb.api_key = "68be78e728be4e86e934df1591d26c5b"
