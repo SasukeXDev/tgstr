@@ -59,6 +59,49 @@
     .col:hover {
         transform: scale(1.05);
     }
+
+    /* Uniform card margin */
+.card-wrapper {
+    padding: 6px !important;
+}
+
+/* Fixed height card */
+.uniform-card {
+    height: 330px; /* You can adjust */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Fixed height image */
+.uniform-card img {
+    height: 170px;
+    object-fit: cover;
+}
+
+/* Lock title height (2 lines max) */
+.card-title {
+    height: 40px;           
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+/* Push badges to bottom */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Optional hover */
+.uniform-card:hover {
+    transform: scale(1.03);
+    transition: 0.2s;
+}
+
+
+    
 </style>
 
 <body>
