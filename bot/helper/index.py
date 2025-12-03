@@ -5,6 +5,7 @@ from bot.helper.database import Database
 from bot.telegram import StreamBot, UserBot
 from bot.helper.file_size import get_readable_file_size
 from bot.helper.cache import get_cache, save_cache
+from bot.helper.tmdb import poster_url
 from asyncio import gather
 
 db = Database()
