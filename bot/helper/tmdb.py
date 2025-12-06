@@ -1,165 +1,159 @@
-from tmdbv3api import TMDb, Movie, TV
+# bot/helper/tmdb.py
+import os
 import re
+import requests
+from difflib import SequenceMatcher
 
-tmdb = TMDb()
-tmdb.api_key = "68be78e728be4e86e934df1591d26c5b"
-tmdb.language = 'en'
+TMDB_API_KEY = os.environ.get("TMDB_API_KEY") or "68be78e728be4e86e934df1591d26c5b"
+TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
-movie_api = Movie()
-tv_api = TV()
-
-
-def extract_title_info(title: str):
+def clean_title_info(raw_title: str):
     """
-    Extract clean title, year, season number, and forced media type
+    Extract clean title, year, season, type from raw string.
+    Example: 'Stranger Things S04 (2016) (Tv)'
+    Returns: dict with keys: title, year, season, type
     """
-    # YEAR (1990–2099)
-    year_match = re.search(r"\b(19|20)\d{2}\b", title)
-    year = int(year_match.group()) if year_match else None
+    info = {"title": raw_title, "year": None, "season": None, "type": None}
+    t = raw_title
 
-    # SEASON NUMBER
-    season_match = re.search(r"[Ss]eason\s?(\d+)", title) or re.search(r"[Ss](\d+)", title)
-    season_number = int(season_match.group(1)) if season_match else None
+    # Detect type (tv or movie)
+    type_match = re.search(r"\((Tv|Movie|tv|movie)\)", t, re.I)
+    if type_match:
+        info["type"] = type_match.group(1).lower()
+        t = t.replace(type_match.group(0), "")
 
-    # FORCE TYPE
-    mtype = None
-    if "(movie)" in title.lower():
-        mtype = "movie"
-    elif "(tv)" in title.lower() or "(series)" in title.lower() or "(show)" in title.lower():
-        mtype = "tv"
+    # Detect year
+    year_match = re.search(r"\((\d{4})\)", t)
+    if year_match:
+        info["year"] = int(year_match.group(1))
+        t = t.replace(year_match.group(0), "")
 
-    # CLEAN TITLE FOR SEARCH
-    cleaned = re.sub(r"\(.*?\)", "", title)              # remove (xxx)
-    cleaned = re.sub(r"[Ss]eason\s?\d+", "", cleaned)    # remove Season 2
-    cleaned = re.sub(r"[Ss]\d+", "", cleaned)            # remove S02
-    cleaned = re.sub(r"[^a-zA-Z0-9\s]", " ", cleaned)   # remove symbols
-    cleaned = cleaned.strip()
+    # Detect season (Sxx)
+    season_match = re.search(r"[sS](\d+)", t)
+    if season_match:
+        info["season"] = int(season_match.group(1))
+        t = t.replace(season_match.group(0), "")
 
-    return cleaned, year, season_number, mtype
+    # Clean extra chars
+    t = re.sub(r"[^a-zA-Z0-9\s]", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    info["title"] = t
+    return info
 
-
-def get_title(obj):
-    """
-    Safely get title or name
-    """
-    if hasattr(obj, "title") and obj.title:
-        return obj.title
-    if hasattr(obj, "name") and obj.name:
-        return obj.name
-    return ""
-
-
-def get_year(obj):
-    """
-    Safely extract year from movie or tv object
-    """
-    date = None
-
-    if hasattr(obj, "release_date") and obj.release_date:
-        date = obj.release_date
-    elif hasattr(obj, "first_air_date") and obj.first_air_date:
-        date = obj.first_air_date
-
-    if date and len(date) >= 4:
-        return int(date[:4])
-
-    return None
-
-
-def get_best_match(results, search_title, search_year=None):
-    """
-    Scoring system:
-    +50 if title similarity
-    +40 if year matches
-    +popularity weight
-    """
-    if not results:
-        return None
-
-    search_title = search_title.lower()
-    best = None
-    best_score = -999
-
-    for r in results:
-        title = get_title(r).lower()
-        score = 0
-
-        # Title similarity
-        if search_title in title:
-            score += 50
-
-        # Year match
-        item_year = get_year(r)
-        if search_year and item_year == search_year:
-            score += 40
-
-        # Popularity
-        if hasattr(r, "popularity") and isinstance(r.popularity, (int, float)):
-            score += r.popularity
-
-        if score > best_score:
-            best_score = score
-            best = r
-
-    return best
-
-
-def fetch_tmdb_season_poster(tv_id, season_number):
-    """Fetch season poster safely. Return None if not found."""
+def tmdb_request(endpoint, params=None):
+    if params is None:
+        params = {}
+    params["api_key"] = TMDB_API_KEY
     try:
-        season = tv_api.season(tv_id, season_number)
-        if season and hasattr(season, "poster_path") and season.poster_path:
-            return f"https://image.tmdb.org/t/p/w500{season.poster_path}"
-    except Exception:
-        pass
-    return None
+        resp = requests.get(f"{TMDB_BASE_URL}{endpoint}", params=params, timeout=5)
+        resp.raise_for_status()
+        return resp.json()
+    except Exception as e:
+        return {}
 
+def similarity(a, b):
+    return SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
-def fetch_poster(title: str) -> str:
-    cleaned_title, year, season_number, forced_type = extract_title_info(title)
+def score_match(item, search_title, search_year=None, is_tv=False):
+    """
+    Score TMDb result for best match.
+    +50 for title similarity, +40 for year match, +popularity
+    """
+    score = 0
+    tmdb_title = item.get("name") if is_tv else item.get("title")
+    tmdb_year = None
+    if is_tv and "first_air_date" in item and item["first_air_date"]:
+        tmdb_year = int(item["first_air_date"][:4])
+    elif not is_tv and "release_date" in item and item["release_date"]:
+        tmdb_year = int(item["release_date"][:4])
 
-    # ---------- 1. Forced movie ----------
-    if forced_type == "movie":
-        movies = movie_api.search(cleaned_title)
-        best = get_best_match(movies, cleaned_title, year)
-        if best and hasattr(best, "poster_path") and best.poster_path:
-            return f"https://image.tmdb.org/t/p/w500{best.poster_path}"
+    # Title similarity
+    if tmdb_title:
+        score += 50 * similarity(search_title, tmdb_title)
 
-    # ---------- 2. Forced TV ----------
-    if forced_type == "tv":
-        shows = tv_api.search(cleaned_title)
-        best = get_best_match(shows, cleaned_title, year)
+    # Year match
+    if search_year and tmdb_year == search_year:
+        score += 40
 
-        if best:
-            # Try season poster first
-            if season_number:
-                season_poster = fetch_tmdb_season_poster(best.id, season_number)
-                if season_poster:
-                    return season_poster
+    # Popularity
+    if "popularity" in item and item["popularity"]:
+        score += item["popularity"]
+
+    return score
+
+def fetch_poster(raw_title: str) -> str:
+    """
+    Fetch poster for Movie or TV show.
+    Handles seasons for TV shows and best match scoring.
+    """
+    info = clean_title_info(raw_title)
+    title_str = info["title"]
+    year = info["year"]
+    season = info["season"]
+    type_ = info["type"]
+
+    # ---------- Movie ----------
+    if type_ == "movie":
+        data = tmdb_request("/search/movie", {"query": title_str, "year": year})
+        results = data.get("results", [])
+        if not results:
+            data = tmdb_request("/search/movie", {"query": title_str})
+            results = data.get("results", [])
+
+        if results:
+            # Best match by score
+            best = max(results, key=lambda x: score_match(x, title_str, year, is_tv=False))
+            poster = best.get("poster_path")
+            if poster:
+                return f"https://image.tmdb.org/t/p/w500{poster}"
+
+    # ---------- TV ----------
+    if type_ == "tv":
+        data = tmdb_request("/search/tv", {"query": title_str})
+        results = data.get("results", [])
+        if results:
+            # Best match by score
+            best = max(results, key=lambda x: score_match(x, title_str, year, is_tv=True))
+            tv_id = best.get("id")
+
+            # Season poster if available
+            if tv_id and season:
+                season_data = tmdb_request(f"/tv/{tv_id}/season/{season}")
+                poster = season_data.get("poster_path")
+                if poster:
+                    return f"https://image.tmdb.org/t/p/w500{poster}"
 
             # Fallback: show poster
-            if hasattr(best, "poster_path") and best.poster_path:
-                return f"https://image.tmdb.org/t/p/w500{best.poster_path}"
+            poster = best.get("poster_path")
+            if poster:
+                return f"https://image.tmdb.org/t/p/w500{poster}"
 
-    # ---------- 3. Auto-detect: movie ----------
-    movies = movie_api.search(cleaned_title)
-    best_movie = get_best_match(movies, cleaned_title, year)
-    if best_movie and hasattr(best_movie, "poster_path") and best_movie.poster_path:
-        return f"https://image.tmdb.org/t/p/w500{best_movie.poster_path}"
+    # ---------- Auto-detect if type not forced ----------
+    # Movie search
+    data = tmdb_request("/search/movie", {"query": title_str, "year": year})
+    results = data.get("results", [])
+    if results:
+        best = max(results, key=lambda x: score_match(x, title_str, year, is_tv=False))
+        poster = best.get("poster_path")
+        if poster:
+            return f"https://image.tmdb.org/t/p/w500{poster}"
 
-    # ---------- 4. Auto-detect: TV ----------
-    shows = tv_api.search(cleaned_title)
-    best_show = get_best_match(shows, cleaned_title, year)
-    if best_show:
-        # Try season poster
-        if season_number:
-            season_poster = fetch_tmdb_season_poster(best_show.id, season_number)
-            if season_poster:
-                return season_poster
+    # TV search
+    data = tmdb_request("/search/tv", {"query": title_str})
+    results = data.get("results", [])
+    if results:
+        best = max(results, key=lambda x: score_match(x, title_str, year, is_tv=True))
+        tv_id = best.get("id")
 
-        # Fallback: show poster
-        if hasattr(best_show, "poster_path") and best_show.poster_path:
-            return f"https://image.tmdb.org/t/p/w500{best_show.poster_path}"
+        if tv_id and season:
+            season_data = tmdb_request(f"/tv/{tv_id}/season/{season}")
+            poster = season_data.get("poster_path")
+            if poster:
+                return f"https://image.tmdb.org/t/p/w500{poster}"
 
-    # ---------- 5. Final fallback ----------
+        poster = best.get("poster_path")
+        if poster:
+            return f"https://image.tmdb.org/t/p/w500{poster}"
+
+    # ---------- Default fallback ----------
     return "https://cdn-icons-png.flaticon.com/512/565/565547.png"
