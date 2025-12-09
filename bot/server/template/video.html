@@ -21,13 +21,6 @@
 
         }
 
-        .footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 60px;
-        }
-
         .container {
             margin: auto;
             padding: 0px;
@@ -117,7 +110,7 @@
     </div>
     <div class="card bg-light mb-3" style="margin: auto; border-radius: 5px;">
         <div class="card-body">
-            <h6 class="card-title mb-2" style="font-weight: 600;">🎬 Name: <!-- Title --></h6>
+            <h5 class="card-title mb-2" style="font-weight: 600;">🎬 Name: <!-- Title --></h5>
             <p class="card-text mb-1">🌐 <strong>Language:</strong> Multi-Language (Hindi + Others)</p>
             <p class="card-text mb-1">📺 <strong>Quality:</strong> 720p / 480p</p>
             <p class="card-text mb-1">⏱️ <strong>Duration:</strong> <!-- Duration --></p>
@@ -198,11 +191,8 @@
     }
 
     function download() {
-        window.open(downloadlink, '_blank');
+        window.location.href = downloadlink;
     }
-    
-      //  window.location.href = downloadlink;
- //   }
 
     function get_file() {
         const regex = /(\d+)\?id=(\d+)&/;
