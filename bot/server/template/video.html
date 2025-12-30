@@ -1,111 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>360Hub: <!-- Title --></title>
+<title>360Hub: <!-- Title --></title>
 
-    <link rel="icon" href="https://homies-theta.vercel.app/logo.png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://bootswatch.com/5/<!-- Theme -->/bootstrap.min.css">
+<link rel="icon" href="https://homies-theta.vercel.app/logo.png">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://bootswatch.com/5/<!-- Theme -->/bootstrap.min.css">
 
-    <!-- Video.js CSS -->
-    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet">
+<!-- Video.js CSS -->
+<link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet">
 
-    <style>
-        body {
-            margin: 0;
-        }
+<style>
+body {
+    margin: 0;
+}
 
-        .video-player {
-            max-width: 48%;
-            margin: auto;
-        }
+.video-player {
+    max-width: 48%;
+    margin: auto;
+    padding-bottom: 10px;
+}
 
-        .video-js {
-            width: 100%;
-            border-radius: 6px;
-        }
+.video-js {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
 
-        .card {
-            max-width: 48%;
-            margin: auto;
-        }
+.card {
+    max-width: 48%;
+    margin: auto;
+}
 
-        .container {
-            gap: 10px;
-        }
+.container {
+    gap: 10px;
+}
 
-        @media (max-width: 992px) {
-            .video-player,
-            .card {
-                max-width: 80%;
-            }
-        }
-    </style>
+@media (max-width: 992px) {
+    .video-player,
+    .card {
+        max-width: 80%;
+    }
+}
+</style>
 </head>
 
 <body>
 
 <nav class="navbar navbar-expand-lg bg-primary mb-3 p-1" data-bs-theme="dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-            <img src="https://homies-theta.vercel.app/logo.png" height="40">
-        </a>
-        <form action="/logout" method="post">
-            <button class="btn btn-secondary btn-sm">
-                <i class="bi bi-box-arrow-left"></i> Logout
-            </button>
-        </form>
-    </div>
+<div class="container-fluid">
+<a class="navbar-brand" href="/">
+<img src="https://homies-theta.vercel.app/logo.png" height="40">
+</a>
+<form action="/logout" method="post">
+<button class="btn btn-secondary btn-sm">
+<i class="bi bi-box-arrow-left"></i> Logout
+</button>
+</form>
+</div>
 </nav>
 
 <!-- VIDEO PLAYER -->
 <div class="video-player">
-    <video
-        id="player"
-        class="video-js vjs-big-play-centered"
-        controls
-        preload="auto"
-        playsinline
-        crossorigin="anonymous"
-        poster="<!-- Poster -->">
-        <!-- IMPORTANT: src set dynamically, NO type -->
-    </video>
+<video
+    id="player"
+    class="video-js vjs-big-play-centered"
+    controls
+    preload="auto"
+    playsinline
+    crossorigin="anonymous"
+    poster="<!-- Poster -->">
+
+    <!-- SOURCE WILL BE SET BY JS -->
+    <source src="#" type="video/mp4">
+
+    <!-- OPTIONAL SUBTITLE (if exists) -->
+    <track kind="subtitles" srclang="en" label="English" src="<!-- subtitle.vtt -->">
+</video>
 </div>
 
 <div class="card bg-light mb-3">
-    <div class="card-body">
-        <h5>🎬 Name: <!-- Title --></h5>
-        <p>🌐 Language: Multi-Language</p>
-        <p>📺 Quality: 720p / 480p</p>
-        <p>⏱ Duration: <!-- Duration --></p>
-        <p>💾 Size: <!-- Size --></p>
-        <p>📁 Format: <!-- Tag --></p>
-    </div>
+<div class="card-body">
+<h5>🎬 Name: <!-- Title --></h5>
+<p>🌐 Language: Multi-Language</p>
+<p>📺 Quality: 720p / 480p</p>
+<p>⏱ Duration: <!-- Duration --></p>
+<p>💾 Size: <!-- Size --></p>
+<p>📁 Format: <!-- Tag --></p>
+</div>
 </div>
 
 <div class="container d-flex justify-content-center">
-    <div onclick="mx_player()" class="btn btn-primary">MX Player</div>
-    <div onclick="vlc_player()" class="btn btn-primary">VLC</div>
-    <div onclick="km_player()" class="btn btn-primary">KM Player</div>
-    <div onclick="get_file()" class="btn btn-primary">Get File</div>
-    <div onclick="copyUrl()" class="btn btn-primary">Copy Url</div>
-    <div onclick="download()" class="btn btn-primary">Download</div>
+<div onclick="mx_player()" class="btn btn-primary">MX Player</div>
+<div onclick="vlc_player()" class="btn btn-primary">VLC</div>
+<div onclick="km_player()" class="btn btn-primary">KM Player</div>
+<div onclick="get_file()" class="btn btn-primary">Get File</div>
+<div onclick="copyUrl()" class="btn btn-primary">Copy Url</div>
+<div onclick="download()" class="btn btn-primary">Download</div>
 </div>
 
 <footer class="text-center mt-3">
-    © 2025 <a href="https://360hub.fun">360Hub</a>
+© 2025 <a href="https://360hub.fun">360Hub</a>
 </footer>
 
 <!-- Video.js JS -->
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
 <script>
-/* ===============================
+/* =========================
    URL LOGIC (UNCHANGED)
-================================ */
+========================= */
 const videolink = window.location.href;
 const url = new URL(videolink);
 const domainUrl = url.origin;
@@ -114,92 +122,92 @@ const idParam = new URLSearchParams(window.location.search).get('id');
 const hashParam = new URLSearchParams(window.location.search).get('hash');
 const encodedName = encodeURIComponent('<!-- Filename -->');
 
-const downloadlink =
-    `${domainUrl}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
+const downloadlink = `${domainUrl}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
 const rawDomain = domainUrl.replace(/^https?:\/\//, "");
-const downloadlink1 =
-    `${rawDomain}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
+const downloadlink1 = `${rawDomain}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
 
-/* ===============================
-   VIDEO.JS INIT (HTML5 ONLY)
-================================ */
+/* =========================
+   VIDEO.JS INIT (SAFE)
+========================= */
 const player = videojs('player', {
     controls: true,
-    fluid: true,
-    techOrder: ['html5'],   // IMPORTANT
+    autoplay: false,
     preload: 'auto',
-    playbackRates: [0.5, 1, 1.25, 1.5, 2]
+    fluid: true,
+    playbackRates: [0.5, 1, 1.25, 1.5, 2],
+    html5: {
+        nativeAudioTracks: true,
+        nativeTextTracks: true
+    }
 });
 
-/* ===============================
-   SET SOURCE NATIVE (FIX)
-================================ */
-const videoEl = document.getElementById('player');
-videoEl.src = downloadlink;
+/* SET SOURCE (IMPORTANT) */
+player.src({
+    src: downloadlink,
+    type: 'video/mp4'
+});
 
-/* ===============================
-   AUTO AUDIO & SUBTITLES
-================================ */
+/* =========================
+   YOUTUBE-STYLE SEEK
+========================= */
+player.el().addEventListener('dblclick', function (e) {
+    const rect = player.el().getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const half = rect.width / 2;
+    const time = player.currentTime();
+
+    if (clickX < half) {
+        player.currentTime(Math.max(0, time - 10));
+    } else {
+        player.currentTime(Math.min(player.duration(), time + 10));
+    }
+});
+
+/* =========================
+   AUDIO + SUBTITLE AUTO
+========================= */
 player.on('loadedmetadata', function () {
 
-    // Audio selector auto appears if multiple audio tracks exist
+    // AUDIO TRACKS
     const audioTracks = player.audioTracks();
-    if (audioTracks && audioTracks.length > 0) {
-        // UI handled by Video.js
+    if (audioTracks && audioTracks.length > 1) {
+        audioTracks[0].enabled = true;
     }
 
-    // Auto enable subtitles if present
+    // SUBTITLES
     const textTracks = player.textTracks();
     for (let i = 0; i < textTracks.length; i++) {
         if (textTracks[i].kind === 'subtitles') {
             textTracks[i].mode = 'showing';
+            break;
         }
     }
 });
 
-/* ===============================
-   YOUTUBE-LIKE CLICK SEEK
-================================ */
-player.on('click', function (e) {
-    const rect = player.el().getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const half = rect.width / 2;
-    const t = player.currentTime();
-
-    if (clickX < half) {
-        player.currentTime(Math.max(0, t - 10));
-    } else {
-        player.currentTime(Math.min(player.duration(), t + 10));
-    }
-});
-
-/* ===============================
+/* =========================
    EXTERNAL PLAYERS
-================================ */
-function mx_player() {
-    location.href =
-        `intent:${downloadlink1}#Intent;package=com.mxtech.videoplayer.ad;end`;
+========================= */
+function mx_player(){
+location.href=`intent:${downloadlink1}#Intent;package=com.mxtech.videoplayer.ad;end`;
 }
-function vlc_player() {
-    location.href = `vlc://${downloadlink1}`;
+function vlc_player(){
+location.href=`vlc://${downloadlink1}`;
 }
-function km_player() {
-    location.href =
-        `intent:${downloadlink1}#Intent;package=com.kmplayer;end`;
+function km_player(){
+location.href=`intent:${downloadlink1}#Intent;package=com.kmplayer;end`;
 }
-function download() {
-    location.href = downloadlink;
+function download(){
+location.href=downloadlink;
 }
-function copyUrl() {
-    navigator.clipboard.writeText(downloadlink);
-    alert("URL copied!");
+function copyUrl(){
+navigator.clipboard.writeText(downloadlink);
+alert("URL copied!");
 }
-function get_file() {
-    const m = videolink.match(/(\d+)\?id=(\d+)/);
-    if (m) {
-        location.href =
-            `https://t.me/<!-- Username -->?start=file_${m[2]}-100${m[1]}`;
-    }
+function get_file(){
+const m=videolink.match(/(\d+)\?id=(\d+)/);
+if(m){
+location.href=`https://t.me/<!-- Username -->?start=file_${m[2]}-100${m[1]}`;
+}
 }
 </script>
 
