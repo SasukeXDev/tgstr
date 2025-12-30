@@ -69,8 +69,9 @@
         controls
         preload="auto"
         playsinline
+        crossorigin="anonymous"
         poster="<!-- Poster -->">
-        <source src="" type="video/mp4">
+        <!-- IMPORTANT: src set dynamically, NO type -->
     </video>
 </div>
 
@@ -120,35 +121,34 @@ const downloadlink1 =
     `${rawDomain}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
 
 /* ===============================
-   VIDEO.JS INIT (CORRECT)
+   VIDEO.JS INIT (HTML5 ONLY)
 ================================ */
 const player = videojs('player', {
     controls: true,
     fluid: true,
+    techOrder: ['html5'],   // IMPORTANT
     preload: 'auto',
     playbackRates: [0.5, 1, 1.25, 1.5, 2]
 });
 
-/* IMPORTANT: set source AFTER init */
-player.ready(function () {
-    player.src({
-        src: downloadlink,
-        type: 'video/mp4'
-    });
-});
+/* ===============================
+   SET SOURCE NATIVE (FIX)
+================================ */
+const videoEl = document.getElementById('player');
+videoEl.src = downloadlink;
 
 /* ===============================
    AUTO AUDIO & SUBTITLES
 ================================ */
 player.on('loadedmetadata', function () {
 
-    /* Audio selector auto appears if multiple tracks exist */
+    // Audio selector auto appears if multiple audio tracks exist
     const audioTracks = player.audioTracks();
     if (audioTracks && audioTracks.length > 0) {
-        // Video.js handles UI automatically
+        // UI handled by Video.js
     }
 
-    /* Subtitle selector auto appears if subtitles exist */
+    // Auto enable subtitles if present
     const textTracks = player.textTracks();
     for (let i = 0; i < textTracks.length; i++) {
         if (textTracks[i].kind === 'subtitles') {
@@ -159,18 +159,17 @@ player.on('loadedmetadata', function () {
 
 /* ===============================
    YOUTUBE-LIKE CLICK SEEK
-   (Single click left/right)
 ================================ */
-player.on('click', function (event) {
+player.on('click', function (e) {
     const rect = player.el().getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
+    const clickX = e.clientX - rect.left;
     const half = rect.width / 2;
-    const current = player.currentTime();
+    const t = player.currentTime();
 
     if (clickX < half) {
-        player.currentTime(Math.max(0, current - 10));
+        player.currentTime(Math.max(0, t - 10));
     } else {
-        player.currentTime(Math.min(player.duration(), current + 10));
+        player.currentTime(Math.min(player.duration(), t + 10));
     }
 });
 
@@ -181,25 +180,20 @@ function mx_player() {
     location.href =
         `intent:${downloadlink1}#Intent;package=com.mxtech.videoplayer.ad;end`;
 }
-
 function vlc_player() {
     location.href = `vlc://${downloadlink1}`;
 }
-
 function km_player() {
     location.href =
         `intent:${downloadlink1}#Intent;package=com.kmplayer;end`;
 }
-
 function download() {
     location.href = downloadlink;
 }
-
 function copyUrl() {
     navigator.clipboard.writeText(downloadlink);
     alert("URL copied!");
 }
-
 function get_file() {
     const m = videolink.match(/(\d+)\?id=(\d+)/);
     if (m) {
