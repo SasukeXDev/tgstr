@@ -21,28 +21,11 @@
         .video-player {
             max-width: 48%;
             margin: auto;
-            position: relative;
         }
 
         .video-js {
             width: 100%;
             border-radius: 6px;
-        }
-
-        .seek-overlay {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 50%;
-            z-index: 5;
-        }
-
-        .seek-left {
-            left: 0;
-        }
-
-        .seek-right {
-            right: 0;
         }
 
         .card {
@@ -80,11 +63,6 @@
 
 <!-- VIDEO PLAYER -->
 <div class="video-player">
-
-    <!-- Double-tap areas -->
-    <div class="seek-overlay seek-left"></div>
-    <div class="seek-overlay seek-right"></div>
-
     <video
         id="player"
         class="video-js vjs-big-play-centered"
@@ -92,7 +70,7 @@
         preload="auto"
         playsinline
         poster="<!-- Poster -->">
-        <source src="#" type="video/mp4">
+        <source src="" type="video/mp4">
     </video>
 </div>
 
@@ -135,68 +113,64 @@ const idParam = new URLSearchParams(window.location.search).get('id');
 const hashParam = new URLSearchParams(window.location.search).get('hash');
 const encodedName = encodeURIComponent('<!-- Filename -->');
 
-const downloadlink = `${domainUrl}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
+const downloadlink =
+    `${domainUrl}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
 const rawDomain = domainUrl.replace(/^https?:\/\//, "");
-const downloadlink1 = `${rawDomain}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
+const downloadlink1 =
+    `${rawDomain}/${videoId}/${encodedName}?id=${idParam}&hash=${hashParam}`;
 
 /* ===============================
-   VIDEO.JS INIT (STABLE)
+   VIDEO.JS INIT (CORRECT)
 ================================ */
 const player = videojs('player', {
     controls: true,
     fluid: true,
+    preload: 'auto',
     playbackRates: [0.5, 1, 1.25, 1.5, 2]
 });
 
-player.src({
-    src: downloadlink,
-    type: 'video/mp4'
+/* IMPORTANT: set source AFTER init */
+player.ready(function () {
+    player.src({
+        src: downloadlink,
+        type: 'video/mp4'
+    });
 });
 
 /* ===============================
-   YOUTUBE-STYLE DOUBLE TAP SEEK
+   AUTO AUDIO & SUBTITLES
 ================================ */
-const SEEK_TIME = 10;
-let tapTimeout;
+player.on('loadedmetadata', function () {
 
-function doubleTapSeek(direction) {
-    const current = player.currentTime();
-    player.currentTime(
-        direction === 'back'
-            ? Math.max(0, current - SEEK_TIME)
-            : Math.min(player.duration(), current + SEEK_TIME)
-    );
-}
-
-document.querySelector('.seek-left').addEventListener('click', () => {
-    if (tapTimeout) {
-        clearTimeout(tapTimeout);
-        tapTimeout = null;
-        doubleTapSeek('back');
-    } else {
-        tapTimeout = setTimeout(() => tapTimeout = null, 250);
+    /* Audio selector auto appears if multiple tracks exist */
+    const audioTracks = player.audioTracks();
+    if (audioTracks && audioTracks.length > 0) {
+        // Video.js handles UI automatically
     }
-});
 
-document.querySelector('.seek-right').addEventListener('click', () => {
-    if (tapTimeout) {
-        clearTimeout(tapTimeout);
-        tapTimeout = null;
-        doubleTapSeek('forward');
-    } else {
-        tapTimeout = setTimeout(() => tapTimeout = null, 250);
-    }
-});
-
-/* ===============================
-   AUTO SUBTITLES (IF EXIST)
-================================ */
-player.on('loadedmetadata', () => {
-    const tracks = player.textTracks();
-    for (let i = 0; i < tracks.length; i++) {
-        if (tracks[i].kind === 'subtitles') {
-            tracks[i].mode = 'showing';
+    /* Subtitle selector auto appears if subtitles exist */
+    const textTracks = player.textTracks();
+    for (let i = 0; i < textTracks.length; i++) {
+        if (textTracks[i].kind === 'subtitles') {
+            textTracks[i].mode = 'showing';
         }
+    }
+});
+
+/* ===============================
+   YOUTUBE-LIKE CLICK SEEK
+   (Single click left/right)
+================================ */
+player.on('click', function (event) {
+    const rect = player.el().getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const half = rect.width / 2;
+    const current = player.currentTime();
+
+    if (clickX < half) {
+        player.currentTime(Math.max(0, current - 10));
+    } else {
+        player.currentTime(Math.min(player.duration(), current + 10));
     }
 });
 
@@ -204,25 +178,33 @@ player.on('loadedmetadata', () => {
    EXTERNAL PLAYERS
 ================================ */
 function mx_player() {
-    location.href = `intent:${downloadlink1}#Intent;package=com.mxtech.videoplayer.ad;end`;
+    location.href =
+        `intent:${downloadlink1}#Intent;package=com.mxtech.videoplayer.ad;end`;
 }
+
 function vlc_player() {
     location.href = `vlc://${downloadlink1}`;
 }
+
 function km_player() {
-    location.href = `intent:${downloadlink1}#Intent;package=com.kmplayer;end`;
+    location.href =
+        `intent:${downloadlink1}#Intent;package=com.kmplayer;end`;
 }
+
 function download() {
     location.href = downloadlink;
 }
+
 function copyUrl() {
     navigator.clipboard.writeText(downloadlink);
     alert("URL copied!");
 }
+
 function get_file() {
     const m = videolink.match(/(\d+)\?id=(\d+)/);
     if (m) {
-        location.href = `https://t.me/<!-- Username -->?start=file_${m[2]}-100${m[1]}`;
+        location.href =
+            `https://t.me/<!-- Username -->?start=file_${m[2]}-100${m[1]}`;
     }
 }
 </script>
