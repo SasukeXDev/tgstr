@@ -3,28 +3,28 @@
 # ----------------------------------------------------------------------
 FROM python:3.12-alpine AS builder
 
-# Install build dependencies (for compiling C extensions like tgcrypto) and 'bash'.
-# NOTE: We DO NOT install 'git' here.
+# Install build dependencies (for compiling C extensions like tgcrypto) and bash
 RUN apk add --no-cache \
         bash \
         build-base \
         libffi-dev \
-        openssl-dev
+        openssl-dev \
+        ffmpeg \
+        curl \
+        wget \
+        && python -m ensurepip
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy requirement file first to leverage Docker layer caching
+# Copy requirements first to leverage caching
 COPY requirements.txt .
 
-# Install pip and uv
-RUN pip install -U pip uv
+# Upgrade pip and install Python dependencies
+RUN pip install --upgrade pip \
+    && pip install --prefix=/install --no-cache-dir -r requirements.txt
 
-# Install Python dependencies.
-RUN uv pip install --system --no-cache-dir -r requirements.txt
-
-
-# Copy the rest of the application source code
+# Copy the rest of the source code
 COPY . /app
 
 # ----------------------------------------------------------------------
@@ -32,19 +32,22 @@ COPY . /app
 # ----------------------------------------------------------------------
 FROM python:3.12-alpine
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Install necessary runtime system dependencies:
-# 1. 'bash' for your CMD ["bash", "surf-tg.sh"].
-# 2. 'git' because your deployed application/script needs it at runtime.
-RUN apk add --no-cache bash git
+# Install runtime dependencies
+RUN apk add --no-cache \
+        bash \
+        git \
+        ffmpeg \
+        curl \
+        wget
 
-# Copy the installed Python dependencies from the 'builder' stage
-COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+# Copy installed Python packages from builder
+COPY --from=builder /install /usr/local
 
 # Copy the application source code
 COPY --from=builder /app /app
 
-# Command to run when the container starts
+# Set default command
 CMD ["bash", "surf-tg.sh"]
