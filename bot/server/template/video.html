@@ -181,7 +181,22 @@
 
 
     const player = new Plyr('#player', {
-        controls: ['play', 'rewind', 'forward', 'progress', 'current-time', 'mute', 'volume', 'fullscreen', 'pip', 'airplay', 'settings', "play-large", 'duration'],
+        controls: [
+            'play-large',
+            'rewind',
+            'play',
+            'fast-forward',
+            'progress',
+            'current-time',
+            'duration',
+            'mute',
+            'volume',
+            'captions',
+            'settings',
+            'pip',
+            'airplay',     
+            'fullscreen'
+        ],
         hideControls: true,
         keyboard: { focused: true, global: true },
         loop: { active: false },
