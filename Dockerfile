@@ -1,50 +1,54 @@
 # ----------------------------------------------------------------------
-# Stage 1: Build Stage (Only includes tools necessary for installation)
+# Stage 1: Build Stage (install Python deps only)
 # ----------------------------------------------------------------------
 FROM python:3.12-alpine AS builder
 
-# Install build dependencies (for compiling C extensions like tgcrypto) and 'bash'.
-# NOTE: We DO NOT install 'git' here.
+# Install build dependencies for Python C extensions
 RUN apk add --no-cache \
         bash \
         build-base \
         libffi-dev \
-        openssl-dev
+        openssl-dev \
+        ffmpeg \
+        curl
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy requirement file first to leverage Docker layer caching
+# Copy requirements first for caching
 COPY requirements.txt .
 
-# Install pip and uv
-RUN pip install -U pip uv
+# Upgrade pip
+RUN pip install --upgrade pip
 
-# Install Python dependencies.
-RUN uv pip install --system --no-cache-dir -r requirements.txt
+# Install Python dependencies
+RUN pip install --system --no-cache-dir -r requirements.txt
 
-
-# Copy the rest of the application source code
+# Copy rest of the app
 COPY . /app
 
 # ----------------------------------------------------------------------
-# Stage 2: Final Stage (Minimal Runtime Image)
+# Stage 2: Runtime Stage (minimal)
 # ----------------------------------------------------------------------
 FROM python:3.12-alpine
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Install necessary runtime system dependencies:
-# 1. 'bash' for your CMD ["bash", "surf-tg.sh"].
-# 2. 'git' because your deployed application/script needs it at runtime.
-RUN apk add --no-cache bash git
+# Install runtime dependencies: bash + ffmpeg
+RUN apk add --no-cache bash ffmpeg curl
 
-# Copy the installed Python dependencies from the 'builder' stage
+# Copy Python dependencies from builder
 COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 
-# Copy the application source code
+# Copy app source
 COPY --from=builder /app /app
+
+# Create folder for HLS streams
+RUN mkdir -p /app/streams/hls
+
+# Expose Flask port
+EXPOSE 5000
 
 # Command to run when the container starts
 CMD ["bash", "surf-tg.sh"]
