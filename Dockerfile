@@ -1,50 +1,57 @@
 # ----------------------------------------------------------------------
-# Stage 1: Build Stage (Only includes tools necessary for installation)
+# Stage 1: Builder
 # ----------------------------------------------------------------------
 FROM python:3.12-alpine AS builder
 
-# Install build dependencies (for compiling C extensions like tgcrypto) and 'bash'.
-# NOTE: We DO NOT install 'git' here.
+# Install build dependencies for tgcrypto & cryptography
 RUN apk add --no-cache \
-        bash \
-        build-base \
-        libffi-dev \
-        openssl-dev
+    bash \
+    build-base \
+    libffi-dev \
+    openssl-dev \
+    cargo \
+    ca-certificates
 
-# Set the working directory
 WORKDIR /app
 
-# Copy requirement file first to leverage Docker layer caching
+# Copy requirements first for cache
 COPY requirements.txt .
 
-# Install pip and uv
-RUN pip install -U pip uv
+# Upgrade pip only (uv not required, avoids edge issues)
+RUN pip install --upgrade pip
 
-# Install Python dependencies.
-RUN uv pip install --system --no-cache-dir -r requirements.txt
+# Install python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-
-# Copy the rest of the application source code
+# Copy app source
 COPY . /app
 
+
 # ----------------------------------------------------------------------
-# Stage 2: Final Stage (Minimal Runtime Image)
+# Stage 2: Runtime
 # ----------------------------------------------------------------------
 FROM python:3.12-alpine
 
-# Set the working directory
 WORKDIR /app
 
-# Install necessary runtime system dependencies:
-# 1. 'bash' for your CMD ["bash", "surf-tg.sh"].
-# 2. 'git' because your deployed application/script needs it at runtime.
-RUN apk add --no-cache bash git
+# Runtime dependencies (IMPORTANT)
+RUN apk add --no-cache \
+    bash \
+    git \
+    libstdc++ \
+    libffi \
+    openssl \
+    ca-certificates
 
-# Copy the installed Python dependencies from the 'builder' stage
-COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+# Copy python site-packages
+COPY --from=builder /usr/local/lib/python3.12/site-packages \
+                    /usr/local/lib/python3.12/site-packages
 
-# Copy the application source code
+# Copy app
 COPY --from=builder /app /app
 
-# Command to run when the container starts
+# 🔥 VERY IMPORTANT: clean old Pyrogram sessions at container start
+RUN rm -f *.session *.session-journal || true
+
+# Start
 CMD ["bash", "surf-tg.sh"]
