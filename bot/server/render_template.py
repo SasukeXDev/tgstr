@@ -6,26 +6,38 @@ from bot import LOGGER
 from bot.config import Telegram
 from bot.helper.database import Database
 from bot.helper.exceptions import InvalidHash
-from bot.helper.index import get_messages
 from bot.helper.file_size import get_readable_file_size
 from bot.server.file_properties import get_file_ids
 from bot.telegram import StreamBot
 
+
 db = Database()
 
-admin_block = """
-                    <style>
-                        .admin-only {
-                            display: none;
-                        }
-                    </style>"""
 
-hide_channel = """
-                    <style>
-                        .hide-channel {
-                            display: none;
-                        }
-                    </style>"""
+async def _render_base(page_title, page_content, is_admin=False, extra_head=""):
+    tpath = ospath.join("bot", "server", "template")
+    async with aiopen(ospath.join(tpath, "base_ott.html"), "r") as f:
+        html = await f.read()
+    return (
+        html.replace("<!-- PageTitle -->", page_title)
+        .replace("<!-- BodyClass -->", "is-admin" if is_admin else "is-public")
+        .replace("<!-- NavbarActions -->", (
+            '<form action="/admin/logout" method="post" class="admin-only">'
+            '<button type="submit" class="ott-button ott-button--ghost">Logout</button>'
+            '</form>'
+        ) if is_admin else "")
+        .replace("<!-- PageContent -->", page_content)
+        .replace("<!-- ExtraHead -->", extra_head)
+    )
+
+
+async def _render_template_file(filename, replacements):
+    tpath = ospath.join("bot", "server", "template")
+    async with aiopen(ospath.join(tpath, filename), "r") as f:
+        html = await f.read()
+    for key, value in replacements.items():
+        html = html.replace(key, value)
+    return html
 
 
 async def render_page(
@@ -43,113 +55,116 @@ async def render_page(
     theme = await db.get_variable("theme")
     if theme is None or theme == "":
         theme = Telegram.THEME
-    tpath = ospath.join("bot", "server", "template")
-    if route == "login":
-        async with aiopen(ospath.join(tpath, "login.html"), "r") as f:
-            html = (
-                (await f.read())
-                .replace("<!-- Error -->", msg or "")
-                .replace("<!-- Theme -->", theme.lower())
-                .replace("<!-- RedirectURL -->", redirect_url)
-            )
-    elif route == "home":
-        async with aiopen(ospath.join(tpath, "home.html"), "r") as f:
-            html = (
-                (await f.read())
-                .replace("<!-- Print -->", html)
-                .replace("<!-- Theme -->", theme.lower())
-                .replace("<!-- Playlist -->", playlist)
-            )
-            if not is_admin:
-                html += admin_block
-                if Telegram.HIDE_CHANNEL:
-                    html += hide_channel
-    elif route == "playlist":
-        async with aiopen(ospath.join(tpath, "playlist.html"), "r") as f:
-            html = (
-                (await f.read())
-                .replace("<!-- Theme -->", theme.lower())
-                .replace("<!-- Playlist -->", playlist)
-                .replace("<!-- Database -->", database)
-                .replace("<!-- Title -->", msg)
-                .replace("<!-- Parent_id -->", id)
-            )
-            if not is_admin:
-                html += admin_block
 
-    elif route == "list":
-        async with aiopen(ospath.join(tpath, "list.html"), "r") as f:
-            html = (await f.read()).replace("<!-- Theme -->", theme.lower())
-            if not is_admin:
-                html += admin_block
-
-    elif route == "index":
-        async with aiopen(ospath.join(tpath, "index.html"), "r") as f:
-            html = (
-                (await f.read())
-                .replace("<!-- Print -->", html)
-                .replace("<!-- Theme -->", theme.lower())
-                .replace("<!-- Title -->", msg)
-                .replace("<!-- Chat_id -->", chat_id)
-            )
-            if not is_admin:
-                html += admin_block
-    else:
-        file_data = await get_file_ids(
-            StreamBot, chat_id=int(chat_id), message_id=int(id)
+    if route == "enter":
+        content = await _render_template_file(
+            "login.html",
+            {
+                "<!-- Error -->": msg or "",
+                "<!-- RedirectURL -->": redirect_url or "/",
+            },
         )
-        if file_data.unique_id[:6] != secure_hash:
-            LOGGER.info(
-                "Link hash: %s - %s", secure_hash, file_data.unique_id[:6]
-            )
-            LOGGER.info("Invalid hash for message with - ID %s", id)
-            raise InvalidHash
-        filename, tag, size = (
-            file_data.file_name,
-            file_data.mime_type.split("/")[0].strip(),
-            get_readable_file_size(file_data.file_size),
+        return await _render_base("360Hub: Enter", content, is_admin=False)
+
+    if route == "admin_login":
+        return await _render_template_file(
+            "admin_login.html",
+            {
+                "<!-- Error -->": msg or "",
+                "<!-- Theme -->": theme.lower(),
+                "<!-- RedirectURL -->": redirect_url or "/",
+            },
         )
-        if filename is None:
-            filename = "Proper Filename is Missing"
-        filename = re.sub(r"[,|_\',]", " ", filename)
-        if tag == "video":
 
-            message = await StreamBot.get_messages(chat_id, int(id))
-            caption = message.caption or message.video.file_name or ""
+    if route == "home":
+        content = await _render_template_file(
+            "home.html",
+            {
+                "<!-- Print -->": html,
+                "<!-- Playlist -->": playlist,
+                "<!-- Theme -->": theme.lower(),
+                "<!-- ChannelVisibility -->": "hide-channel" if Telegram.HIDE_CHANNEL else "",
+            },
+        )
+        return await _render_base("360Hub: Home", content, is_admin=is_admin)
 
-            # Duration (in seconds → formatted hh:mm:ss)
-            duration_sec = getattr(message.video, "duration", None)
-            if duration_sec:
-                duration_sec = int(duration_sec)  # convert float to int
-                hours = duration_sec // 3600
-                minutes = (duration_sec % 3600) // 60
-                seconds = duration_sec % 60
-                if hours > 0:
-                    duration = f"{hours:02}:{minutes:02}:{seconds:02}"
-                else:
-                    duration = f"{minutes:02}:{seconds:02}"
-            else:
-                duration = "Unknown"
+    if route == "playlist":
+        content = await _render_template_file(
+            "playlist.html",
+            {
+                "<!-- Theme -->": theme.lower(),
+                "<!-- Playlist -->": playlist,
+                "<!-- Database -->": database,
+                "<!-- Title -->": msg,
+                "<!-- Parent_id -->": str(id),
+            },
+        )
+        return await _render_base(f"360Hub: {msg}", content, is_admin=is_admin)
 
-            async with aiopen(ospath.join(tpath, "video.html")) as r:
-                poster = f"/api/thumb/{chat_id}?id={id}"
-                html = (
-                    (await r.read())
-                    .replace("<!-- Title -->", caption)
-                    .replace("<!-- Duration -->", duration)
-                    .replace("<!-- Filename -->", filename)
-                    .replace("<!-- Theme -->", theme.lower())
-                    .replace("<!-- Poster -->", poster)
-                    .replace("<!-- Size -->", size)
-                    .replace("<!-- Tag -->", tag)
-                    .replace("<!-- Username -->", StreamBot.me.username)
-                )
+    if route == "list":
+        content = await _render_template_file("list.html", {"<!-- Theme -->": theme.lower()})
+        return await _render_base("360Hub: List", content, is_admin=is_admin)
+
+    if route == "index":
+        content = await _render_template_file(
+            "index.html",
+            {
+                "<!-- Print -->": html,
+                "<!-- Title -->": msg,
+                "<!-- Chat_id -->": chat_id,
+                "<!-- Theme -->": theme.lower(),
+            },
+        )
+        return await _render_base(f"360Hub: {msg}", content, is_admin=is_admin)
+
+    file_data = await get_file_ids(StreamBot, chat_id=int(chat_id), message_id=int(id))
+    if file_data.unique_id[:6] != secure_hash:
+        LOGGER.info("Link hash: %s - %s", secure_hash, file_data.unique_id[:6])
+        LOGGER.info("Invalid hash for message with - ID %s", id)
+        raise InvalidHash
+    filename, tag, size = (
+        file_data.file_name,
+        file_data.mime_type.split("/")[0].strip(),
+        get_readable_file_size(file_data.file_size),
+    )
+    if filename is None:
+        filename = "Proper Filename is Missing"
+    filename = re.sub(r"[,|_\',]", " ", filename)
+    if tag == "video":
+        message = await StreamBot.get_messages(chat_id, int(id))
+        caption = message.caption or message.video.file_name or ""
+        duration_sec = getattr(message.video, "duration", None)
+        if duration_sec:
+            duration_sec = int(duration_sec)
+            hours = duration_sec // 3600
+            minutes = (duration_sec % 3600) // 60
+            seconds = duration_sec % 60
+            duration = f"{hours:02}:{minutes:02}:{seconds:02}" if hours > 0 else f"{minutes:02}:{seconds:02}"
         else:
-            async with aiopen(ospath.join(tpath, "dl.html")) as r:
-                html = (
-                    (await r.read())
-                    .replace("<!-- Filename -->", filename)
-                    .replace("<!-- Theme -->", theme.lower())
-                    .replace("<!-- Size -->", size)
-                )
-    return html
+            duration = "Unknown"
+        content = await _render_template_file(
+            "video.html",
+            {
+                "<!-- Title -->": caption,
+                "<!-- Duration -->": duration,
+                "<!-- Filename -->": filename,
+                "<!-- Theme -->": theme.lower(),
+                "<!-- Poster -->": f"/api/thumb/{chat_id}?id={id}",
+                "<!-- Size -->": size,
+                "<!-- Tag -->": tag,
+                "<!-- Username -->": StreamBot.me.username,
+            },
+        )
+        extra_head = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/css/plyr.css">'
+        return await _render_base(f"360Hub: {caption}", content, is_admin=is_admin, extra_head=extra_head)
+
+    content = await _render_template_file(
+        "dl.html",
+        {
+            "<!-- Filename -->": filename,
+            "<!-- Theme -->": theme.lower(),
+            "<!-- Size -->": size,
+            "<!-- Username -->": StreamBot.me.username,
+        },
+    )
+    return await _render_base(f"360Hub: {filename}", content, is_admin=is_admin)

@@ -60,26 +60,24 @@ async def get_files(chat_id, page=1):
 
 async def posts_file(posts, chat_id):
     phtml = """
-    
-            <div class="col">
-                
-                    <div class="card text-white bg-primary mb-3">
-                        <input type="checkbox" class="admin-only form-check-input position-absolute top-0 end-0 m-2"
-                            onchange="checkSendButton()" id="selectCheckbox"
-                            data-id="{id}|{hash}|{title}|{size}|{type}|{img}">
-                        <img src="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/loading.gif" class="lzy_img card-img-top rounded-top"
-                            data-src="{img}" alt="{title}"
-                            onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/565/565547.png';">
-                        <a href="/watch/{chat_id}?id={id}&hash={hash}">
-                        <div class="card-body p-1">
-                            <h6 class="card-title">{title}</h6>
-                            <span class="badge bg-warning">{type}</span>
-                            <span class="badge bg-info">{size}</span>
-                        </div>
-                        </a>
-                    </div>
-                
+    <article class="ott-card-item">
+        <input type="checkbox" class="ott-select-box admin-only"
+            onchange="checkSendButton()" id="selectCheckbox"
+            data-id="{id}|{hash}|{title}|{size}|{type}|{img}">
+        <a class="ott-card-link" href="/watch/{chat_id}?id={id}&hash={hash}">
+            <div class="ott-card-media">
+                <img src="{img}" alt="{title}" loading="lazy"
+                    onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/565/565547.png';">
             </div>
-"""
+            <div class="ott-card-body">
+                <h3 class="ott-card-title">{title}</h3>
+                <div class="ott-pills">
+                    <span class="ott-pill">{type}</span>
+                    <span class="ott-pill">{size}</span>
+                </div>
+            </div>
+        </a>
+    </article>
+    """
 
     return ''.join(phtml.format(chat_id=str(chat_id).replace("-100", ""), id=post["msg_id"], img=post["poster_url"], title=post["title"], hash=post["hash"], size=post['size'], type=post['type']) for post in posts)
