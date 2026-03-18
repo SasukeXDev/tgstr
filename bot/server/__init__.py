@@ -11,4 +11,5 @@ async def web_server():
     web_app = Application(client_max_size=30000000)
     setup(web_app, EncryptedCookieStorage(Fernet(secret_key)))
     web_app.add_routes(routes)
+    web_app.router.add_static('/static/', path='bot/server/static', name='static')
     return web_app
