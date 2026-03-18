@@ -44,13 +44,21 @@ async def render_page(
     if theme is None or theme == "":
         theme = Telegram.THEME
     tpath = ospath.join("bot", "server", "template")
-    if route == "login":
+    if route == "enter":
         async with aiopen(ospath.join(tpath, "login.html"), "r") as f:
             html = (
                 (await f.read())
                 .replace("<!-- Error -->", msg or "")
                 .replace("<!-- Theme -->", theme.lower())
-                .replace("<!-- RedirectURL -->", redirect_url)
+                .replace("<!-- RedirectURL -->", redirect_url or "/")
+            )
+    elif route == "admin_login":
+        async with aiopen(ospath.join(tpath, "admin_login.html"), "r") as f:
+            html = (
+                (await f.read())
+                .replace("<!-- Error -->", msg or "")
+                .replace("<!-- Theme -->", theme.lower())
+                .replace("<!-- RedirectURL -->", redirect_url or "/")
             )
     elif route == "home":
         async with aiopen(ospath.join(tpath, "home.html"), "r") as f:
@@ -152,4 +160,6 @@ async def render_page(
                     .replace("<!-- Theme -->", theme.lower())
                     .replace("<!-- Size -->", size)
                 )
+        if not is_admin:
+            html += admin_block
     return html
