@@ -164,9 +164,87 @@ img { max-width: 100%; }
     .hero-content { padding: 1.25rem; }
     .download-actions .btn, .action-cluster .btn { width: 100%; }
 }
+
+.ott-app-new,
+.ott-app-new body { background: #07080d; }
+.ott-app-new .nm-platform-col,
+.ott-app-new .nm-rail-col { min-width: 0; }
+.ott-app-new .nm-platform-link,
+.ott-app-new .nm-media-link { display:block; }
+.ott-app-new .nm-platform-card {
+    display:flex; align-items:center; gap:1rem; min-height: 112px; padding: 1rem 1.1rem;
+    border-radius: 24px; border: 1px solid rgba(255,255,255,.08);
+    background: linear-gradient(145deg, rgba(19,22,33,.98), rgba(10,11,18,.96));
+    box-shadow: 0 16px 40px rgba(0,0,0,.35);
+    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+.ott-app-new .nm-platform-card:hover { transform: translateY(-6px); border-color: rgba(229,9,20,.45); box-shadow: 0 24px 46px rgba(0,0,0,.5); }
+.ott-app-new .nm-platform-logo-wrap {
+    width: 72px; height: 72px; border-radius: 22px; overflow:hidden; flex: 0 0 72px;
+    background: linear-gradient(135deg, rgba(229,9,20,.22), rgba(124,58,237,.22)); padding: 3px;
+}
+.ott-app-new .nm-platform-logo { width:100%; height:100%; object-fit:cover; border-radius: 19px; background:#0b0b0b; }
+.ott-app-new .nm-platform-kicker, .ott-app-new .nm-media-tag { color: #d1d5db; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; }
+.ott-app-new .nm-platform-title { margin:.25rem 0; font-size:1rem; font-weight:700; color:#fff; }
+.ott-app-new .nm-platform-pill,
+.ott-app-new .nm-media-badge {
+    display:inline-flex; align-items:center; justify-content:center; min-height: 28px;
+    padding:.3rem .72rem; border-radius:999px; background: rgba(255,255,255,.08); color:#fff;
+    border: 1px solid rgba(255,255,255,.1); font-size:.75rem;
+}
+.ott-app-new .nm-media-badge--info { background: rgba(124,58,237,.24); }
+.ott-app-new .nm-media-card {
+    position:relative; height:100%; overflow:hidden; border-radius: 24px;
+    background: linear-gradient(180deg, rgba(18,20,30,.98), rgba(8,9,14,.98));
+    border:1px solid rgba(255,255,255,.08); box-shadow: 0 22px 45px rgba(0,0,0,.34);
+    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+.ott-app-new .nm-media-card:hover { transform: translateY(-8px) scale(1.02); border-color: rgba(229,9,20,.42); box-shadow: 0 28px 54px rgba(0,0,0,.52); }
+.ott-app-new .nm-media-poster-wrap { position:relative; aspect-ratio: 2/3; overflow:hidden; background:#111; }
+.ott-app-new .nm-media-poster { width:100%; height:100%; object-fit:cover; display:block; }
+.ott-app-new .nm-media-overlay {
+    position:absolute; inset:0; background: linear-gradient(180deg, rgba(7,8,13,.04) 10%, rgba(7,8,13,.36) 55%, rgba(7,8,13,.95) 100%);
+}
+.ott-app-new .nm-play-chip {
+    position:absolute; inset:auto auto 1rem 1rem; width: 48px; height: 48px; display:grid; place-items:center;
+    border-radius:50%; background: linear-gradient(135deg, #e50914, #7c3aed); color:#fff; font-size:1.2rem;
+    box-shadow: 0 16px 28px rgba(0,0,0,.35); opacity:0; transform: translateY(12px); transition: all .3s ease;
+}
+.ott-app-new .nm-media-card:hover .nm-play-chip { opacity:1; transform: translateY(0); }
+.ott-app-new .nm-media-body { padding: 1rem 1rem 1.1rem; }
+.ott-app-new .nm-media-title {
+    margin: .35rem 0 .7rem; color:#fff; font-weight:700; line-height:1.35;
+    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; min-height: 2.7em;
+}
+.ott-app-new .nm-meta-row { display:flex; flex-wrap:wrap; gap:.45rem; }
+.ott-app-new .nm-edit-btn,
+.ott-app-new .nm-select-box {
+    position:absolute !important; top: .9rem !important; right: .9rem !important; z-index:3;
+}
+.ott-app-new .nm-edit-btn {
+    width: 38px; height: 38px; display:grid; place-items:center; border-radius: 50%;
+    background: rgba(7,8,13,.72); color:#fff; border:1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+}
+.ott-app-new .nm-select-box { width: 1.15rem; height: 1.15rem; }
+.ott-app-new .grid-cards { row-gap: 1rem !important; }
+.ott-app-new .scroll-strip { display:flex !important; flex-wrap:nowrap !important; overflow-x:auto !important; padding-bottom: .85rem; }
+.ott-app-new .scroll-strip > * { flex: 0 0 min(320px, 84vw); }
+.ott-app-new .hero-banner::before {
+    content:''; position:absolute; inset:0; background: linear-gradient(90deg, rgba(5,6,10,.92) 20%, rgba(5,6,10,.5) 55%, rgba(5,6,10,.15) 100%);
+}
+.ott-app-new .glass-card { overflow:hidden; }
+.ott-app-new .search-panel, .ott-app-new .glass-card { backdrop-filter: blur(16px); }
+.ott-app-new .pagination .page-link { background: rgba(255,255,255,.06) !important; }
+.ott-app-new .navbar-toggler { border-color: rgba(255,255,255,.16); }
+@media (max-width: 767px) {
+    .ott-app-new .nm-platform-card { min-height: 96px; padding: .9rem; }
+    .ott-app-new .nm-platform-logo-wrap { width: 60px; height: 60px; flex-basis: 60px; }
+}
+
 </style>
 </head>
-<body>
+<body class="ott-app-new">
     <div class="admin-only modal fade" id="editConfigModal" aria-labelledby="editConfigModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-body"><form action="/config" method="post"><label for="edit_channel">Auth Channel:</label><input type="text" class="form-control" id="edit_channel" name="channel" value=""><br><label for="edit_theme">Theme:</label><input type="text" class="form-control" id="edit_theme" name="theme" value="<!-- Theme -->"><br><div class="d-flex justify-content-end gap-2"><button type="submit" class="btn btn-primary" onclick="submitEditConfigForm()">Submit</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></form></div></div></div></div>
     <div class="admin-only modal fade" id="createFolderModal" aria-labelledby="createFolderModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-body"><form action="/create" method="post"><label for="folderName" class="form-label">Folder Name</label><input type="text" class="form-control" id="folderName" name="folderName" placeholder="Enter folder name"><label for="thumbnail" class="form-label mt-3">Thumbnail</label><input type="text" class="form-control" id="thumbnail" name="thumbnail" placeholder="Thumbnail url"><br><input type="hidden" id="parent_dir" name="parent_dir" readonly><div class="d-flex justify-content-end gap-2"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button><button type="submit" class="btn btn-primary">Create</button></div></form></div></div></div></div>
     <div class="admin-only modal fade" id="editFolderModal" aria-labelledby="editFolderModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-body"><form action="/edit" method="post"><input type="hidden" id="edit_folder_id" name="folder_id" value=""><input type="hidden" id="edit_parent" name="parent" value=""><label for="edit_folderName">Folder Name:</label><input type="text" class="form-control" id="edit_folderName" name="folderName" value=""><br><label for="edit_thumbnail">Thumbnail:</label><input type="text" class="form-control" id="edit_thumbnail" name="thumbnail" value=""><br><div class="d-flex justify-content-end gap-2"><button type="submit" class="btn btn-primary" onclick="submitEditForm()">Submit</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-danger" onclick="deleteItem()">Delete</button></div></form></div></div></div></div>

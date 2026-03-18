@@ -17,24 +17,19 @@ async def get_chats():
 
 async def posts_chat(channels):
     phtml = """
-            <div class="col channel-card">
-                <a href="/channel/{cid}">
-                    <div class="card profile-card text-white bg-primary mb-2">
-                    
-                        <div class="img-container text-center"
-                            style="width: 145px; height: 145px; display: inline-block; overflow: hidden; position: relative; border-radius: 50%; margin: auto;">
-                            <img src="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/loading.gif" class="card-img-top lzy_img"
-                                data-src="{img}" alt="{title}"
-                                style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <div class="col nm-platform-col">
+                <a href="/channel/{cid}" class="nm-platform-link" aria-label="Open {title}">
+                    <article class="nm-platform-card">
+                        <div class="nm-platform-logo-wrap">
+                            <img src="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/loading.gif"
+                                class="lzy_img nm-platform-logo" data-src="{img}" loading="lazy" alt="{title}">
                         </div>
-            
-                        <div class="card-body p-1 text-center">
-                            <div>
-                                <h6 class="card-title">{title}</h6>
-                                <span class="badge bg-warning">{ctype}</span>
-                            </div>
+                        <div class="nm-platform-copy">
+                            <span class="nm-platform-kicker">Telegram OTT</span>
+                            <h6 class="nm-platform-title">{title}</h6>
+                            <span class="nm-platform-pill">{ctype}</span>
                         </div>
-                    </div>
+                    </article>
                 </a>
             </div>
 """
@@ -43,30 +38,25 @@ async def posts_chat(channels):
 
 async def post_playlist(playlists):
     dhtml = """
-    <div class="col">
-
-        <div class="card profile-card text-white bg-primary mb-2">
+    <div class="col nm-rail-col">
+        <article class="nm-media-card nm-folder-card">
             <a href="" onclick="openEditPopupForm(event, '{img}', '{ctype}', '{cid}', '{title}')"
-                class="admin-only position-absolute top-0 end-0 m-2" data-bs-toggle="modal" data-bs-target="#editFolderModal"
-                style="z-index: 1;"><i class="bi bi-pencil-square"></i>
+                class="admin-only nm-edit-btn" data-bs-toggle="modal" data-bs-target="#editFolderModal"><i class="bi bi-pencil-square"></i>
             </a>
-            
-                <div class="img-container text-center"
-                    style="width: 145px; height: 145px; display: inline-block; overflow: hidden; position: relative; border-radius: 50%; margin: auto;">
+            <a href="/playlist?db={cid}" class="nm-media-link">
+                <div class="nm-media-poster-wrap">
                     <img src="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/loading.gif"
-                        class="card-img-top lzy_img" data-src="{img}" alt="{title}"
-                        style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                        class="lzy_img nm-media-poster" data-src="{img}" loading="lazy" alt="{title}">
+                    <div class="nm-media-overlay"></div>
+                    <div class="nm-play-chip"><i class="bi bi-play-fill"></i></div>
                 </div>
-            <a href="/playlist?db={cid}" style="text-align: center;">
-                <div class="card-body p-1 text-center">
-                    <div>
-                        <h6 class="card-title">{title}</h6>
-                        <span class="badge bg-warning">Folder</span>
-                    </div>
+                <div class="nm-media-body">
+                    <span class="nm-media-tag">Collection</span>
+                    <h6 class="nm-media-title">{title}</h6>
+                    <div class="nm-meta-row"><span class="nm-media-badge">Folder</span></div>
                 </div>
             </a>
-        </div>
-
+        </article>
     </div>
     """
 
@@ -75,26 +65,26 @@ async def post_playlist(playlists):
 
 async def posts_db_file(posts):
     phtml = """
-    <div class="col">
-
-        <div class="card text-white bg-primary mb-2">
+    <div class="col nm-rail-col">
+        <article class="nm-media-card">
             <a href=""
                 onclick="openPostEditPopupForm(event, '{img}', '{type}', '{size}', '{title}', '{cid}', '{ctype}')"
-                class="admin-only position-absolute top-0 end-0 m-2" data-bs-toggle="modal" data-bs-target="#editModal"><i
+                class="admin-only nm-edit-btn" data-bs-toggle="modal" data-bs-target="#editModal"><i
                     class="bi bi-pencil-square"></i></a>
-            
-                <img src="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/loading.gif" data-src="{img}"
-                    class="card-img-top rounded-top lzy_img" alt="{title}">
-                <a href="/watch/{chat_id}?id={id}&hash={hash}">
-                <div class="card-body p-1">
-                    <h6 class="card-title">{title}</h6>
-                    <span class="badge bg-warning">{type}</span>
-                    <span class="badge bg-info">{size}</span>
+            <a href="/watch/{chat_id}?id={id}&hash={hash}" class="nm-media-link">
+                <div class="nm-media-poster-wrap">
+                    <img src="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/loading.gif" data-src="{img}"
+                        class="lzy_img nm-media-poster" loading="lazy" alt="{title}">
+                    <div class="nm-media-overlay"></div>
+                    <div class="nm-play-chip"><i class="bi bi-play-fill"></i></div>
                 </div>
-                </a>
-            
-        </div>
-
+                <div class="nm-media-body">
+                    <span class="nm-media-tag">Telegram Library</span>
+                    <h6 class="nm-media-title">{title}</h6>
+                    <div class="nm-meta-row"><span class="nm-media-badge">{type}</span><span class="nm-media-badge nm-media-badge--info">{size}</span></div>
+                </div>
+            </a>
+        </article>
     </div>
 """
     return ''.join(phtml.format(cid=post["_id"], chat_id=str(post["chat_id"]).replace("-100", ""), id=post["file_id"], img=post["thumbnail"], title=post["title"], hash=post["hash"], size=post['size'], type=post['file_type'], ctype=post["parent_folder"]) for post in posts)

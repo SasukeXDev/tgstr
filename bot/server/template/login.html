@@ -147,4 +147,82 @@ img { max-width: 100%; }
     .hero-content { padding: 1.25rem; }
     .download-actions .btn, .action-cluster .btn { width: 100%; }
 }
-</style></head><body><nav class="navbar navbar-expand-lg ott-navbar" data-bs-theme="dark"><div class="ott-shell container-fluid py-2"><a class="navbar-brand brand-wrap" href="/"><span class="brand-mark"><img src="https://homies-theta.vercel.app/logo.png" alt="Logo"></span><span class="brand-copy"><small>Secure entry</small><strong>Surf-TG</strong></span></a></div></nav><main class="login-shell fade-in"><section class="hero-banner login-hero"><div class="hero-overlay"></div><div class="hero-content"><div class="eyebrow">Welcome back</div><h1 class="display-title">Your Telegram content, reimagined like a premium streaming service.</h1><p class="lead-copy mb-4">Everything behind the scenes stays intact. This is a visual-only redesign with a more polished OTT-style experience across desktop and mobile.</p><div class="meta-row"><span class="tile-badge">Admin: admin</span><span class="tile-badge">Password: admin</span></div></div></section><section class="glass-card login-card"><div><div class="eyebrow">Sign in</div><h2 class="h3 fw-bold mb-1">Continue watching</h2><p class="section-copy mb-3">Use your existing credentials to access the same backend-powered library.</p></div><div class="alert alert-dismissible alert-danger error-popup" id="errorPopup"><strong>Oh snap! <!-- Error --></strong></div><div id="loginContainer"><form id="signinForm" action="/login" method="post"><input type="hidden" name="redirect_url" value="{{ redirect_url }}"><fieldset><div class="inputBox"><label for="exampleInputUsername" class="form-label mt-2">Username</label><input type="text" class="form-control" id="exampleInputUsername" name="username" placeholder="Enter username"></div><div class="inputBox"><label for="exampleInputPassword1" class="form-label mt-4">Password</label><input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Password" autocomplete="off"></div><div class="text-center mt-4"><button type="submit" class="btn btn-primary inputBox w-100">Submit</button></div></fieldset></form></div></section></main><footer class="footer-ott"><div class="ott-shell">Made with ❤️ by <a href="https://t.me/Uchiha_Developer" target="_blank">Sasuke Uchiha</a><br>&copy; 2025 <a href="https://360hub.fun" target="_blank">360Hub</a>. All Rights Reserved.</div></footer><div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center"><div class="modal-header border-0"><h5 class="modal-title w-100" id="infoModalLabel"><b>Important Notice!</b></h5></div><div class="modal-body"><p>We Need Support to run the App & Site!</p><p>1. Please click the below ADS Button and wait 10–25 seconds.</p><p>2. After that back to app or site! </p><p>3. The login page will appear automatically.</p><a href="https://www.effectivegatecpm.com/fhc2mgst?key=adbfe79f99ae39dbb10678b4777a7aca" target="_blank" class="btn btn-primary" id="startBtn"><h2>Open Now!</h2></a><div id="countdown" class="mt-3 text-muted"></div></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-0ER9KSVEH8"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0ER9KSVEH8');</script><script>window.onload=function(){var errorPopup=document.getElementById("errorPopup");var errorMessage=errorPopup.querySelector("strong").innerText.trim();if(errorMessage!=="Oh snap! Invalid username or password"){errorPopup.style.display="none";}if(errorMessage==="Oh snap! Invalid username or password"){setTimeout(function(){errorPopup.style.display="none";},5000);}};document.addEventListener("DOMContentLoaded",()=>{const loginContainer=document.getElementById("loginContainer");const modalEl=document.getElementById("infoModal");const countdownEl=document.getElementById("countdown");const startBtn=document.getElementById("startBtn");const modal=new bootstrap.Modal(modalEl,{backdrop:'static',keyboard:false});const lastShown=parseInt(localStorage.getItem("popupLastShown")||"0",10);const now=Date.now();const DAY=24*60*60*1000;if(!lastShown||(now-lastShown)>DAY){modal.show();startBtn.onclick=()=>{const delay=Math.floor(Math.random()*10)+10;let remaining=delay;countdownEl.innerText=`Please wait ${remaining} seconds...`;const timer=setInterval(()=>{remaining--;countdownEl.innerText=`Please wait ${remaining} seconds...`;if(remaining<=0){clearInterval(timer);modal.hide();loginContainer.style.display="block";localStorage.setItem("popupLastShown",Date.now().toString());}},1000);};} else {loginContainer.style.display="block";}});</script></body></html>
+
+.ott-app-new,
+.ott-app-new body { background: #07080d; }
+.ott-app-new .nm-platform-col,
+.ott-app-new .nm-rail-col { min-width: 0; }
+.ott-app-new .nm-platform-link,
+.ott-app-new .nm-media-link { display:block; }
+.ott-app-new .nm-platform-card {
+    display:flex; align-items:center; gap:1rem; min-height: 112px; padding: 1rem 1.1rem;
+    border-radius: 24px; border: 1px solid rgba(255,255,255,.08);
+    background: linear-gradient(145deg, rgba(19,22,33,.98), rgba(10,11,18,.96));
+    box-shadow: 0 16px 40px rgba(0,0,0,.35);
+    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+.ott-app-new .nm-platform-card:hover { transform: translateY(-6px); border-color: rgba(229,9,20,.45); box-shadow: 0 24px 46px rgba(0,0,0,.5); }
+.ott-app-new .nm-platform-logo-wrap {
+    width: 72px; height: 72px; border-radius: 22px; overflow:hidden; flex: 0 0 72px;
+    background: linear-gradient(135deg, rgba(229,9,20,.22), rgba(124,58,237,.22)); padding: 3px;
+}
+.ott-app-new .nm-platform-logo { width:100%; height:100%; object-fit:cover; border-radius: 19px; background:#0b0b0b; }
+.ott-app-new .nm-platform-kicker, .ott-app-new .nm-media-tag { color: #d1d5db; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; }
+.ott-app-new .nm-platform-title { margin:.25rem 0; font-size:1rem; font-weight:700; color:#fff; }
+.ott-app-new .nm-platform-pill,
+.ott-app-new .nm-media-badge {
+    display:inline-flex; align-items:center; justify-content:center; min-height: 28px;
+    padding:.3rem .72rem; border-radius:999px; background: rgba(255,255,255,.08); color:#fff;
+    border: 1px solid rgba(255,255,255,.1); font-size:.75rem;
+}
+.ott-app-new .nm-media-badge--info { background: rgba(124,58,237,.24); }
+.ott-app-new .nm-media-card {
+    position:relative; height:100%; overflow:hidden; border-radius: 24px;
+    background: linear-gradient(180deg, rgba(18,20,30,.98), rgba(8,9,14,.98));
+    border:1px solid rgba(255,255,255,.08); box-shadow: 0 22px 45px rgba(0,0,0,.34);
+    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+.ott-app-new .nm-media-card:hover { transform: translateY(-8px) scale(1.02); border-color: rgba(229,9,20,.42); box-shadow: 0 28px 54px rgba(0,0,0,.52); }
+.ott-app-new .nm-media-poster-wrap { position:relative; aspect-ratio: 2/3; overflow:hidden; background:#111; }
+.ott-app-new .nm-media-poster { width:100%; height:100%; object-fit:cover; display:block; }
+.ott-app-new .nm-media-overlay {
+    position:absolute; inset:0; background: linear-gradient(180deg, rgba(7,8,13,.04) 10%, rgba(7,8,13,.36) 55%, rgba(7,8,13,.95) 100%);
+}
+.ott-app-new .nm-play-chip {
+    position:absolute; inset:auto auto 1rem 1rem; width: 48px; height: 48px; display:grid; place-items:center;
+    border-radius:50%; background: linear-gradient(135deg, #e50914, #7c3aed); color:#fff; font-size:1.2rem;
+    box-shadow: 0 16px 28px rgba(0,0,0,.35); opacity:0; transform: translateY(12px); transition: all .3s ease;
+}
+.ott-app-new .nm-media-card:hover .nm-play-chip { opacity:1; transform: translateY(0); }
+.ott-app-new .nm-media-body { padding: 1rem 1rem 1.1rem; }
+.ott-app-new .nm-media-title {
+    margin: .35rem 0 .7rem; color:#fff; font-weight:700; line-height:1.35;
+    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; min-height: 2.7em;
+}
+.ott-app-new .nm-meta-row { display:flex; flex-wrap:wrap; gap:.45rem; }
+.ott-app-new .nm-edit-btn,
+.ott-app-new .nm-select-box {
+    position:absolute !important; top: .9rem !important; right: .9rem !important; z-index:3;
+}
+.ott-app-new .nm-edit-btn {
+    width: 38px; height: 38px; display:grid; place-items:center; border-radius: 50%;
+    background: rgba(7,8,13,.72); color:#fff; border:1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+}
+.ott-app-new .nm-select-box { width: 1.15rem; height: 1.15rem; }
+.ott-app-new .grid-cards { row-gap: 1rem !important; }
+.ott-app-new .scroll-strip { display:flex !important; flex-wrap:nowrap !important; overflow-x:auto !important; padding-bottom: .85rem; }
+.ott-app-new .scroll-strip > * { flex: 0 0 min(320px, 84vw); }
+.ott-app-new .hero-banner::before {
+    content:''; position:absolute; inset:0; background: linear-gradient(90deg, rgba(5,6,10,.92) 20%, rgba(5,6,10,.5) 55%, rgba(5,6,10,.15) 100%);
+}
+.ott-app-new .glass-card { overflow:hidden; }
+.ott-app-new .search-panel, .ott-app-new .glass-card { backdrop-filter: blur(16px); }
+.ott-app-new .pagination .page-link { background: rgba(255,255,255,.06) !important; }
+.ott-app-new .navbar-toggler { border-color: rgba(255,255,255,.16); }
+@media (max-width: 767px) {
+    .ott-app-new .nm-platform-card { min-height: 96px; padding: .9rem; }
+    .ott-app-new .nm-platform-logo-wrap { width: 60px; height: 60px; flex-basis: 60px; }
+}
+
+</style></head><body class="ott-app-new"><nav class="navbar navbar-expand-lg ott-navbar" data-bs-theme="dark"><div class="ott-shell container-fluid py-2"><a class="navbar-brand brand-wrap" href="/"><span class="brand-mark"><img src="https://homies-theta.vercel.app/logo.png" alt="Logo"></span><span class="brand-copy"><small>Secure entry</small><strong>Surf-TG</strong></span></a></div></nav><main class="login-shell fade-in"><section class="hero-banner login-hero"><div class="hero-overlay"></div><div class="hero-content"><div class="eyebrow">Welcome back</div><h1 class="display-title">Your Telegram content, reimagined like a premium streaming service.</h1><p class="lead-copy mb-4">Everything behind the scenes stays intact. This is a visual-only redesign with a more polished OTT-style experience across desktop and mobile.</p><div class="meta-row"><span class="tile-badge">Admin: admin</span><span class="tile-badge">Password: admin</span></div></div></section><section class="glass-card login-card"><div><div class="eyebrow">Sign in</div><h2 class="h3 fw-bold mb-1">Continue watching</h2><p class="section-copy mb-3">Use your existing credentials to access the same backend-powered library.</p></div><div class="alert alert-dismissible alert-danger error-popup" id="errorPopup"><strong>Oh snap! <!-- Error --></strong></div><div id="loginContainer"><form id="signinForm" action="/login" method="post"><input type="hidden" name="redirect_url" value="{{ redirect_url }}"><fieldset><div class="inputBox"><label for="exampleInputUsername" class="form-label mt-2">Username</label><input type="text" class="form-control" id="exampleInputUsername" name="username" placeholder="Enter username"></div><div class="inputBox"><label for="exampleInputPassword1" class="form-label mt-4">Password</label><input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Password" autocomplete="off"></div><div class="text-center mt-4"><button type="submit" class="btn btn-primary inputBox w-100">Submit</button></div></fieldset></form></div></section></main><footer class="footer-ott"><div class="ott-shell">Made with ❤️ by <a href="https://t.me/Uchiha_Developer" target="_blank">Sasuke Uchiha</a><br>&copy; 2025 <a href="https://360hub.fun" target="_blank">360Hub</a>. All Rights Reserved.</div></footer><div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center"><div class="modal-header border-0"><h5 class="modal-title w-100" id="infoModalLabel"><b>Important Notice!</b></h5></div><div class="modal-body"><p>We Need Support to run the App & Site!</p><p>1. Please click the below ADS Button and wait 10–25 seconds.</p><p>2. After that back to app or site! </p><p>3. The login page will appear automatically.</p><a href="https://www.effectivegatecpm.com/fhc2mgst?key=adbfe79f99ae39dbb10678b4777a7aca" target="_blank" class="btn btn-primary" id="startBtn"><h2>Open Now!</h2></a><div id="countdown" class="mt-3 text-muted"></div></div></div></div></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-0ER9KSVEH8"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-0ER9KSVEH8');</script><script>window.onload=function(){var errorPopup=document.getElementById("errorPopup");var errorMessage=errorPopup.querySelector("strong").innerText.trim();if(errorMessage!=="Oh snap! Invalid username or password"){errorPopup.style.display="none";}if(errorMessage==="Oh snap! Invalid username or password"){setTimeout(function(){errorPopup.style.display="none";},5000);}};document.addEventListener("DOMContentLoaded",()=>{const loginContainer=document.getElementById("loginContainer");const modalEl=document.getElementById("infoModal");const countdownEl=document.getElementById("countdown");const startBtn=document.getElementById("startBtn");const modal=new bootstrap.Modal(modalEl,{backdrop:'static',keyboard:false});const lastShown=parseInt(localStorage.getItem("popupLastShown")||"0",10);const now=Date.now();const DAY=24*60*60*1000;if(!lastShown||(now-lastShown)>DAY){modal.show();startBtn.onclick=()=>{const delay=Math.floor(Math.random()*10)+10;let remaining=delay;countdownEl.innerText=`Please wait ${remaining} seconds...`;const timer=setInterval(()=>{remaining--;countdownEl.innerText=`Please wait ${remaining} seconds...`;if(remaining<=0){clearInterval(timer);modal.hide();loginContainer.style.display="block";localStorage.setItem("popupLastShown",Date.now().toString());}},1000);};} else {loginContainer.style.display="block";}});</script></body></html>
