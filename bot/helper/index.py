@@ -60,25 +60,26 @@ async def get_files(chat_id, page=1):
 
 async def posts_file(posts, chat_id):
     phtml = """
-    
-            <div class="col">
-                
-                    <div class="card text-white bg-primary mb-3">
-                        <input type="checkbox" class="admin-only form-check-input position-absolute top-0 end-0 m-2"
-                            onchange="checkSendButton()" id="selectCheckbox"
-                            data-id="{id}|{hash}|{title}|{size}|{type}|{img}">
-                        <img src="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/loading.gif" class="lzy_img card-img-top rounded-top"
-                            data-src="{img}" alt="{title}"
-                            onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/565/565547.png';">
-                        <a href="/watch/{chat_id}?id={id}&hash={hash}">
-                        <div class="card-body p-1">
-                            <h6 class="card-title">{title}</h6>
-                            <span class="badge bg-warning">{type}</span>
-                            <span class="badge bg-info">{size}</span>
+            <div class="col nm-rail-col">
+                <article class="nm-media-card nm-video-card">
+                    <input type="checkbox" class="admin-only nm-select-box"
+                        onchange="checkSendButton()" id="selectCheckbox"
+                        data-id="{id}|{hash}|{title}|{size}|{type}|{img}">
+                    <a href="/watch/{chat_id}?id={id}&hash={hash}" class="nm-media-link">
+                        <div class="nm-media-poster-wrap">
+                            <img src="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/src/loading.gif" class="lzy_img nm-media-poster"
+                                data-src="{img}" loading="lazy" alt="{title}"
+                                onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/565/565547.png';">
+                            <div class="nm-media-overlay"></div>
+                            <div class="nm-play-chip"><i class="bi bi-play-fill"></i></div>
                         </div>
-                        </a>
-                    </div>
-                
+                        <div class="nm-media-body">
+                            <span class="nm-media-tag">Featured</span>
+                            <h6 class="nm-media-title">{title}</h6>
+                            <div class="nm-meta-row"><span class="nm-media-badge">{type}</span><span class="nm-media-badge nm-media-badge--info">{size}</span></div>
+                        </div>
+                    </a>
+                </article>
             </div>
 """
 
