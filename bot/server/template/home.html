@@ -1,271 +1,150 @@
-<!DOCTYPE html>
-<html lang="en">
+<section class="ott-hero">
+    <span class="ott-hero__eyebrow">Browse library</span>
+    <h1 id="ottHomeHeading"><!-- HomeHeading --></h1>
+    <p class="ott-copy">Pick a channel or open a folder to keep browsing the catalog. Your last selected channel is surfaced here for quick return.</p>
+    <div class="ott-action-row">
+        <button type="button" class="ott-button ott-button--ghost admin-only" onclick="openModal('editConfigModal')">Settings</button>
+        <button type="button" class="ott-button ott-button--ghost admin-only" onclick="location.href='/reload?chatId=home'">Reload</button>
+        <button type="button" class="ott-button admin-only" onclick="createPopupForm(event)">Create folder</button>
+    </div>
+</section>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://homies-theta.vercel.app/logo.png" type="image/x-icon">
-    <link rel="shortcut icon" href="https://homies-theta.vercel.app/logo.png"
-        type="image/x-icon">
-    <meta name="google-site-verification" content="ah70imZftJ_jasyZPjvWySgKttv2r5Qeuo_e-ixZo4s" />
-    <title>360Hub: Home</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://bootswatch.com/5/<!-- Theme -->/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/gh/weebzone/weebzone/data/Surf-TG/js/SurfTG.js"></script>
-    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool'></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    
-</head>
-<style>
-    a {
-        text-decoration: none;
-    }
+<section class="ott-section <!-- ChannelVisibility -->">
+    <div class="ott-section-header">
+        <div>
+            <h2>Channel selector</h2>
+            <p class="ott-copy">Choose a Telegram source to launch the OTT Lounge channel homepage.</p>
+        </div>
+    </div>
+    <div class="ott-selector-grid">
+        <!-- Print -->
+    </div>
+</section>
 
-    ::-webkit-scrollbar {
-        width: 5px;
-    }
+<section class="ott-section">
+    <div class="ott-section-header">
+        <div>
+            <h2>Folders</h2>
+            <p class="ott-copy">Curated playlists and categories.</p>
+        </div>
+    </div>
+    <div class="ott-grid">
+        <!-- Playlist -->
+    </div>
+</section>
 
-    ::-webkit-scrollbar-thumb {
-        background: #888;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-
-    html {
-        position: relative;
-        min-height: 100%;
-    }
-
-    body {
-        margin-bottom: 60px;
-    }
-
-    .footer {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 60px;
-    }
-
-    .col {
-        transition: all 0.3s;
-    }
-
-    .col:hover {
-        transform: scale(1.05);
-    }
-
-/* Navbar hover effects */
-    .navbar-nav .nav-link {
-      font-weight: 450;
-      transition: 0.2s;
-    }
-
-    .navbar-nav .nav-link:hover {
-      opacity: 0.8;
-    }
-
-    .navbar-brand {
-      font-size: 1.2rem;
-    }
-    
-    
-</style>
-
-<body>
-    <div class="admin-only modal fade" id="editConfigModal" aria-labelledby="editConfigModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <form action="/config" method="post">
-                        <label for="edit_channel">Auth Channel:</label>
-                        <input type="text" class="form-control" id="edit_channel" name="channel" value=""><br>
-                        <label for="edit_theme">Theme:</label>
-                        <input type="text" class="form-control" id="edit_theme" name="theme" value="<!-- Theme -->"><br>
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary me-2"
-                                onclick="submitEditConfigForm()">Submit</button>
-                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
+<div class="ott-modal admin-only" id="editConfigModal" aria-hidden="true">
+    <div class="ott-modal__panel">
+        <div class="ott-modal__header">
+            <h3 class="ott-modal__title">Settings</h3>
+            <button type="button" class="ott-icon-button ott-icon-button--ghost" onclick="closeModal('editConfigModal')">✕</button>
+        </div>
+        <form action="/config" method="post" class="ott-form-grid">
+            <label class="ott-label">Auth Channel
+                <input type="text" class="ott-field" id="edit_channel" name="channel" value="">
+            </label>
+            <label class="ott-label">Theme
+                <input type="text" class="ott-field" id="edit_theme" name="theme" value="<!-- Theme -->">
+            </label>
+            <div class="ott-form-actions">
+                <button type="button" class="ott-button ott-button--ghost" onclick="closeModal('editConfigModal')">Close</button>
+                <button type="submit" class="ott-button">Save</button>
             </div>
-        </div>
+        </form>
     </div>
-    <div class="admin-only modal fade" id="createFolderModal" aria-labelledby="createFolderModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <form action="/create" method="post">
-                        <label for="folderName" class="form-label">Folder Name</label>
-                        <input type="text" class="form-control" id="folderName" name="folderName"
-                            placeholder="Enter folder name">
-                        <label for="thumbnail" class="form-label">Thumbnail</label>
-                        <input type="text" class="form-control" id="thumbnail" name="thumbnail"
-                            placeholder="Thumbnail url"><br>
-                        <input type="hidden" id="parent_dir" name="parent_dir" readonly>
-                        <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Create</button>
-                        </div>
-                    </form>
-                </div>
+</div>
+
+<div class="ott-modal admin-only" id="createFolderModal" aria-hidden="true">
+    <div class="ott-modal__panel">
+        <div class="ott-modal__header">
+            <h3 class="ott-modal__title">Create folder</h3>
+            <button type="button" class="ott-icon-button ott-icon-button--ghost" onclick="closeModal('createFolderModal')">✕</button>
+        </div>
+        <form action="/create" method="post" class="ott-form-grid">
+            <label class="ott-label">Folder Name
+                <input type="text" class="ott-field" id="folderName" name="folderName" placeholder="Enter folder name">
+            </label>
+            <label class="ott-label">Thumbnail
+                <input type="text" class="ott-field" id="thumbnail" name="thumbnail" placeholder="Thumbnail URL">
+            </label>
+            <input type="hidden" id="parent_dir" name="parent_dir" readonly>
+            <div class="ott-form-actions">
+                <button type="button" class="ott-button ott-button--ghost" onclick="closeModal('createFolderModal')">Close</button>
+                <button type="submit" class="ott-button">Create</button>
             </div>
-        </div>
+        </form>
     </div>
+</div>
 
-    <div class="admin-only modal fade" id="editFolderModal" aria-labelledby="editFolderModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <form action="/edit" method="post">
-                        <input type="hidden" id="edit_folder_id" name="folder_id" value="">
-                        <input type="hidden" id="edit_parent" name="parent" value="">
-                        <label for="edit_folderName">Folder Name:</label>
-                        <input type="text" class="form-control" id="edit_folderName" name="folderName" value=""><br>
-                        <label for="edit_thumbnail">Thumbnail:</label>
-                        <input type="text" class="form-control" id="edit_thumbnail" name="thumbnail" value=""><br>
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary me-2"
-                                onclick="submitEditForm()">Submit</button>
-                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-danger" onclick="deleteItem()">Delete</button>
-                        </div>
-                    </form>
-                </div>
+<div class="ott-modal admin-only" id="editFolderModal" aria-hidden="true">
+    <div class="ott-modal__panel">
+        <div class="ott-modal__header">
+            <h3 class="ott-modal__title">Edit folder</h3>
+            <button type="button" class="ott-icon-button ott-icon-button--ghost" onclick="closeModal('editFolderModal')">✕</button>
+        </div>
+        <form action="/edit" method="post" class="ott-form-grid">
+            <input type="hidden" id="edit_folder_id" name="folder_id" value="">
+            <input type="hidden" id="edit_parent" name="parent" value="">
+            <label class="ott-label">Folder Name
+                <input type="text" class="ott-field" id="edit_folderName" name="folderName" value="">
+            </label>
+            <label class="ott-label">Thumbnail
+                <input type="text" class="ott-field" id="edit_thumbnail" name="thumbnail" value="">
+            </label>
+            <div class="ott-form-actions">
+                <button type="button" class="ott-button ott-button--danger" onclick="deleteItem()">Delete</button>
+                <button type="button" class="ott-button ott-button--ghost" onclick="closeModal('editFolderModal')">Close</button>
+                <button type="submit" class="ott-button">Save</button>
             </div>
-        </div>
+        </form>
     </div>
+</div>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <img src="https://homies-theta.vercel.app/logo.png" alt="Logo"
-                    height="40">
-            </a>
-
-            
-                <!-- Mobile Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-
-        <!-- Navbar Links -->
-    <div class="collapse navbar-collapse" id="mainNavbar">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-
-        <li class="nav-item">
-          <a class="nav-link active" href="/"> Home</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="https://app.360hub.fun"> Download App</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="https://t.me/Offical360Hub" target="_blank"> Community</a>
-        </li>
-
-      </ul>
-    </div>
-
-
-
-            
-            <div class="d-flex">
-                <button type="button" class="admin-only btn btn-primary me-1 btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#editConfigModal"><i
-                        class="bi bi-pencil"></i></button>
-                <form action="/reload" method="get" role="reload" class="admin-only ">
-                    <button type="submit" class="btn btn-primary me-1 btn-sm" name="chatId" value="home">
-                        <i class="bi bi-arrow-clockwise"></i>
-                    </button>
-                </form>
-                <form id="signoutForm" action="/logout" method="post" class="d-flex" role="logout">
-                    <button type="submit" class="btn btn-secondary btn-sm"><i class="bi bi-box-arrow-left"></i>
-                        Logout</button>
-                </form>
-            </div>
-        </div>
-    </nav>
-    <div class="container d-flex align-items-center justify-content-center">
-        <div class="card mx-auto text-center">
-            <div class="card-header">Available Source:</div>
-        </div>
-        <button type="button" class="admin-only btn btn-secondary btn-sm" data-bs-toggle="modal"
-            data-bs-target="#createFolderModal" onclick="createPopupForm(event)">Create Folder</button>
-    </div>
-    <!-- Above ADs  -->
-    
-    <!-- ADS End  -->
-
-    <div class="container py-2">
-        <!-- Channel grid  -->
-        <div class="hide-channel row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2">
-            <!-- Channel card  -->
-            <!-- Print -->
-        </div>
-        <!-- Folder grid  -->
-        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2">
-            <!-- Folder card  -->
-            <!-- Playlist -->
-        </div>
-    </div>
-    <footer class="footer mt-auto py-3 text-muted text-center" style="color: white;">
-        <div class="container d-flex justify-content-center align-items-center" style="width: 100%; padding: 0 10px;">
-            <p class="float-end">
-            <p>Made with <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="red"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
-                        d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" />
-                </svg> by <a href="https://t.me/Uchiha_Developer" target="_blank">Sasuke Uchiha</a><br>
-                &copy; 2025 <a href="https://360hub.fun" target="_blank">360Hub</a>. All Rights
-                Reserved.
-            </p>
-        </div>
-    </footer>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0ER9KSVEH8"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-0ER9KSVEH8');
-</script>    
-
-</body>
 <script>
     function setDefaultChannelValue() {
-        const channelCards = document.querySelectorAll('.channel-card');
-
-        const cids = Array.from(channelCards).map(card => {
-            const link = card.querySelector('a');
-            console.log(link)
-            if (link) {
-                const cid = link.getAttribute('href').split('/').pop();
-                return `-100${cid}`;
-            }
-            return null;
-        }).filter(cid => cid !== null);
-
+        const channelCards = document.querySelectorAll('.channel-card-link');
+        const cids = Array.from(channelCards).map(link => {
+            const href = link.getAttribute('href') || '';
+            return href.split('/').pop();
+        }).filter(Boolean).map(cid => `-100${cid}`);
         const channelInput = document.getElementById('edit_channel');
-        channelInput.value = cids.join(', ');
+        if (channelInput) {
+            channelInput.value = cids.join(', ');
+        }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const editConfigModal = document.getElementById('editConfigModal');
-        editConfigModal.addEventListener('show.bs.modal', function () {
-            setDefaultChannelValue();
-        });
-    });
+    function createPopupForm(event) {
+        if (event) event.preventDefault();
+        document.getElementById('parent_dir').value = window.location.href;
+        openModal('createFolderModal');
+    }
 
+    function openEditPopupForm(event, img, ctype, cid, title) {
+        event.preventDefault();
+        document.getElementById('edit_thumbnail').value = img;
+        document.getElementById('edit_folderName').value = title;
+        document.getElementById('edit_folder_id').value = cid;
+        document.getElementById('edit_parent').value = ctype;
+        openModal('editFolderModal');
+    }
+
+    async function deleteItem() {
+        const deleteId = document.getElementById('edit_folder_id').value;
+        const parent = document.getElementById('edit_parent').value;
+        await fetch('/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ delete_id: deleteId, parent })
+        });
+        location.reload();
+    }
+
+    const selectedTitle = OttApp.getRememberedChannelTitle();
+    const homeHeading = document.getElementById('ottHomeHeading');
+    if (selectedTitle && homeHeading) {
+        homeHeading.textContent = `${selectedTitle} & more`;
+    }
+    OttApp.syncSelectedLabel(selectedTitle);
+    OttApp.bindChannelCards();
+    setDefaultChannelValue();
 </script>
-</html>
