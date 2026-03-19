@@ -275,3 +275,44 @@ def fetch_poster(raw_title: str) -> str:
 
     except Exception:
         return FALLBACK_POSTER
+
+
+def fetch_artwork(raw_title: str) -> dict:
+    try:
+        clean_title, year, season, forced_type = clean_and_extract(raw_title)
+        if not clean_title:
+            return {"poster": FALLBACK_POSTER, "backdrop": FALLBACK_POSTER}
+
+        best = None
+        is_tv = False
+        if forced_type == "movie":
+            best = _choose_best(_search_movie(clean_title, year), clean_title, year, is_tv=False)
+        elif forced_type == "tv":
+            is_tv = True
+            best = _choose_best(_search_tv(clean_title), clean_title, year, is_tv=True)
+        else:
+            best_movie = _choose_best(_search_movie(clean_title, year), clean_title, year, is_tv=False)
+            best_tv = _choose_best(_search_tv(clean_title), clean_title, year, is_tv=True)
+            movie_score = _score_item(best_movie, clean_title, year, False) if best_movie else -1
+            tv_score = _score_item(best_tv, clean_title, year, True) if best_tv else -1
+            if tv_score > movie_score:
+                best, is_tv = best_tv, True
+            else:
+                best = best_movie
+
+        poster = FALLBACK_POSTER
+        backdrop = FALLBACK_POSTER
+        if best:
+            if is_tv and season:
+                season_poster = _get_season_poster(best.get("id"), season)
+                if season_poster:
+                    poster = season_poster
+            if poster == FALLBACK_POSTER and best.get("poster_path"):
+                poster = _build_poster_url(best.get("poster_path"))
+            if best.get("backdrop_path"):
+                backdrop = _build_poster_url(best.get("backdrop_path")).replace('/w500', '/w1280')
+            elif poster != FALLBACK_POSTER:
+                backdrop = poster.replace('/w500', '/w1280')
+        return {"poster": poster, "backdrop": backdrop}
+    except Exception:
+        return {"poster": FALLBACK_POSTER, "backdrop": FALLBACK_POSTER}
